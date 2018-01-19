@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.sam.summoner.InfoActivity">
+
+    <!-- SEARCH BAR LAYOUT -->
+    <RelativeLayout
+        android:id="@+id/searchBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background2">
+
+        <!-- SEARCH BAR -->
+        <EditText
+            android:id="@+id/searchTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text=""
+            android:hint="Summoner name"
+            android:layout_toLeftOf="@+id/searchBtn"
+            android:layout_toStartOf="@+id/searchBtn" />
+
+        <!-- SEARCH BUTTON -->
+        <Button
+            android:id="@+id/searchBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:text="Search"
+            android:layout_alignTop="@+id/searchTxt"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
+    <!-- INFO LAYOUT -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/searchBarLayout"
+        android:background="@drawable/background1">
+        <RelativeLayout
+            android:id="@+id/infoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- SUMMONER NAME VIEW -->
+            <TextView
+                android:id="@+id/nameView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_centerHorizontal="true"
+                android:text="GreyIcon" />
+
+            <!-- SUMMONER LEVEL VIEW -->
+            <TextView
+                android:id="@+id/levelView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textStyle="italic"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/nameView"
+                android:text="Level 30" />
+
+            <!-- RANKED STATS LAYOUT -->
+            <RelativeLayout
+                android:id="@+id/rankedLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/levelView"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
+
+                <!-- RANKED SOLO STATS -->
+                <RelativeLayout
+                    android:id="@+id/rankedSoloLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <!-- RANKED SOLO ICON -->
+                    <RelativeLayout
+                        android:id="@+id/rankedSoloIconLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/rankedSoloImg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/rankedSoloLabel"
+                            android:layout_width="65dp"
+                            android:layout_height="wrap_content"
+                            android:text="Ranked Solo"
+                            android:textColor="@android:color/white"
+                            android:textStyle="italic"
+                            android:layout_centerInParent="true"
+                            android:layout_below="@+id/rankedSoloImg"/>
+
+                    </RelativeLayout>
+
+                    <!-- RANKED SOLO INFO -->
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/rankedSoloIconLayout">
+
+                        <TextView
+                            android:id="@+id/rankedSoloTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/white"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/rankedSoloWinLoss"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/rankedSoloTitle"
+                            android:textColor="@android:color/white"/>
+
+                        <ProgressBar
+                            android:id="@+id/rankedSoloWinrate"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_below="@+id/rankedSoloWinLoss"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <!-- RANKED FLEX STATS -->
+
+                <RelativeLayout
+                    android:id="@+id/rankedFlexLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rankedSoloLayout">
+
+                    <!-- RANKED FLEX ICON -->
+                    <RelativeLayout
+                        android:id="@+id/rankedFlexIconLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/rankedFlexImg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/rankedFlexLabel"
+                            android:layout_width="65dp"
+                            android:layout_height="wrap_content"
+                            android:text="Ranked Flex"
+                            android:textColor="@android:color/white"
+                            android:textStyle="italic"
+                            android:layout_centerInParent="true"
+                            android:layout_below="@+id/rankedFlexImg"/>
+
+                    </RelativeLayout>
+
+                    <!-- RANKED FLEX INFO -->
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/rankedFlexIconLayout">
+
+                        <TextView
+                            android:id="@+id/rankedFlexTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/white"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/rankedFlexWinLoss"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/rankedFlexTitle"
+                            android:textColor="@android:color/white"/>
+
+                        <ProgressBar
+                            android:id="@+id/rankedFlexWinrate"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_below="@+id/rankedFlexWinLoss"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <!-- RANKED 5S STATS -->
+                <RelativeLayout
+                    android:id="@+id/ranked3sLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rankedFlexLayout">
+
+                    <!-- RANKED 5S ICON -->
+                    <RelativeLayout
+                        android:id="@+id/ranked3sIconLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/ranked3sImg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/ranked3sLabel"
+                            android:layout_width="65dp"
+                            android:layout_height="wrap_content"
+                            android:text="Ranked 3s"
+                            android:textColor="@android:color/white"
+                            android:textStyle="italic"
+                            android:layout_centerInParent="true"
+                            android:layout_below="@+id/ranked3sImg"/>
+
+                    </RelativeLayout>
+
+                    <!-- RANKED 5S INFO -->
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/ranked3sIconLayout">
+
+                        <TextView
+                            android:id="@+id/ranked3sTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/white"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/ranked3sWinLoss"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/ranked3sTitle"
+                            android:textColor="@android:color/white"/>
+
+                        <ProgressBar
+                            android:id="@+id/ranked3sWinrate"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_below="@+id/ranked3sWinLoss"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+
+
+
+
+
+
+
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>
