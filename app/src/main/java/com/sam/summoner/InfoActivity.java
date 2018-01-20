@@ -1,16 +1,14 @@
 package com.sam.summoner;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,9 +16,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.concurrent.ExecutionException;
-
 public class InfoActivity extends AppCompatActivity {
+    private final String TAG = "InfoActivity";
+
     private Summoner summoner;
     private RequestManager requestManager;
     private ChampionManager championManager;
@@ -35,11 +33,13 @@ public class InfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        requestManager = new RequestManager();
+        String jString = getIntent().getStringExtra("jString");
+        String ddVersion = getIntent().getStringExtra("ddVersion");
 
+        requestManager = new RequestManager(getApplicationContext());
+        requestManager.setDdVersion(ddVersion);
 
         summoner = new Summoner(null, null, null, null);
-        String jString = getIntent().getStringExtra("jString");
         summoner.setAccount(parseAccount(jString));
 
         nameView = (TextView) findViewById(R.id.nameView);
@@ -53,124 +53,108 @@ public class InfoActivity extends AppCompatActivity {
             }
         });
 
-        RelativeLayout soloQueue = (RelativeLayout) findViewById(R.id.rankedSoloLayout);
-        soloQueue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
         updateNameView();
-        setRankedView();
-    }
-
-    //Get ranked information from a summoner, then update the layout's ranked information
-    private void setRankedView() {
-        String webString = requestManager.getRankJArray(summoner.getAccount().getSummonerID());
-        String rankedString = "";
-        try {
-            rankedString = new WebGrabber(this).execute(webString).get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Task failed", Toast.LENGTH_SHORT).show();
-        }
-        parseRankArray(rankedString);
         updateRankedView();
     }
 
-    //Refresh name and level in layout for current summoner
-    private void updateNameView() {
-        String name = summoner.getAccount().getSummonerName();
-        int lvl = summoner.getAccount().getSummonerLevel();
-        setNameView(name, lvl);
+    // get ranked information from a summoner, then update the layout's ranked information
+    private void updateRankedView() {
+        Log.d(TAG, "Updating ranked views...");
+        String rankedString = requestManager.getRankJArray(summoner.getAccount().getSummonerID());
+        parseRankArray(rankedString);
+        updateRankedDesc();
     }
 
-    //Helper
-    //Set textviews
-    private void setNameView(String name, int lvl) {
+    // refresh name and level in layout for current summoner
+    private void updateNameView() {
+        Log.d(TAG, "Updating name views...");
+        String name = summoner.getAccount().getSummonerName();
+        int lvl = summoner.getAccount().getSummonerLevel();
         nameView.setText(name);
         levelView.setText("Level " + lvl);
     }
 
-    //Return an Account with summoner data in jString
+    // return an Account with summoner data in jString
     private Account parseAccount(String jString) {
-        Account ret = null;
-        int icon = -1;
-        String name = null;
-        int level = -1;
-        int aid = -1;
-        int sid = -1;
-
+        Log.d(TAG, "Parsing account information from summoner jString...");
         try {
             JSONObject jAccount = new JSONObject(jString);
-            icon = jAccount.getInt("profileIconId");
-            name = jAccount.getString("name");
-            level = jAccount.getInt("summonerLevel");
-            aid = jAccount.getInt("accountId");
-            sid = jAccount.getInt("id");
-            ret = new Account(icon, name, level, sid, aid);
+            int icon = jAccount.getInt("profileIconId");
+            String name = jAccount.getString("name");
+            int level = jAccount.getInt("summonerLevel");
+            int aid = jAccount.getInt("accountId");
+            int sid = jAccount.getInt("id");
+            return new Account(icon, name, level, sid, aid);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to parse account information: " + e);
         }
-        return ret;
+        return null;
     }
 
+    // from a jArray containing information on a summoner's ranked queues, set summoner ranked data accordingly
     private void parseRankArray(String jString) {
+        Log.d(TAG, "Parsing ranked queue information from jString...");
         try {
             JSONArray jArray = new JSONArray(jString);
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < jArray.length(); i++) {
                 JSONObject jRank = null;
                 try {jRank = jArray.getJSONObject(i);} catch (JSONException e) {}
                 RankedInfo info = parseRankQueue(jRank);
                 String queue = info.getQueue();
                 switch (queue) {
                     case "RANKED_SOLO_5x5":
+                        Log.d(TAG, "Solo queue parsed.");
                         summoner.setSolo(info);
                         break;
                     case "RANKED_FLEX_SR":
+                        Log.d(TAG, "Flex queue parsed.");
                         summoner.setFlex(info);
                         break;
                     case "RANKED_FLEX_TT":
+                        Log.d(TAG, "3s queue parsed.");
                         summoner.setTree(info);
                         break;
                 }
             }
             if (summoner.getSolo() == null) {
+                Log.d(TAG, "No solo queue information found.");
                 summoner.setSolo(new RankedInfo("RANKED_SOLO_5x5", "No Ranked Info", "UNRANKED", "", 0, 0, 0));
             }
             if (summoner.getFlex() == null) {
+                Log.d(TAG, "No flex queue information found.");
                 summoner.setFlex(new RankedInfo("RANKED_FLEX_SR", "No Ranked Info", "UNRANKED", "", 0, 0, 0));
             }
             if (summoner.getTree() == null) {
+                Log.d(TAG, "No 3s queue information found.");
                 summoner.setTree(new RankedInfo("RANKED_FLEX_TT", "No Ranked Info", "UNRANKED", "", 0, 0, 0));
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to parse ranked queue information: " + e);
         }
     }
-
+    // helper
+    // parse RankedInfo objects from jArray
     private RankedInfo parseRankQueue(JSONObject jRank) {
-        RankedInfo rInfo = new RankedInfo("", "No Ranked Info", "UNRANKED", "", 0, 0, 0);
-        if (jRank != null) {
-            try {
-                rInfo.setQueue(jRank.getString("queueType"));
-                rInfo.setLeagueName(jRank.getString("leagueName"));
-                rInfo.setLeaguePoints(jRank.getInt("leaguePoints"));
-                rInfo.setLeagueRank(jRank.getString("rank"));
-                rInfo.setLeagueTier(jRank.getString("tier"));
-                rInfo.setWins(jRank.getInt("wins"));
-                rInfo.setLosses(jRank.getInt("losses"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return rInfo;
-            }
+        Log.d(TAG, "Parsing RankedInfo object from jArray...");
+        try {
+            return new RankedInfo(
+            jRank.getString("queueType"),
+            jRank.getString("leagueName"),
+            jRank.getString("tier"),
+            jRank.getString("rank"),
+            jRank.getInt("leaguePoints"),
+            jRank.getInt("wins"),
+            jRank.getInt("losses"));
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to parse RankedInfo object: " + e);
         }
-        return rInfo;
+        return null;
     }
 
-    private void updateRankedView() {
+    // set text for summoner ranked queue information
+    private void updateRankedDesc() {
         // Ranked solo
+        Log.d(TAG, "Setting solo queue text...");
         ImageView img1 = (ImageView) findViewById(R.id.rankedSoloImg);
         setImage(summoner.getSolo().getLeagueTier(), img1);
         TextView rankedSoloTitle = (TextView) findViewById(R.id.rankedSoloTitle);
@@ -185,6 +169,7 @@ public class InfoActivity extends AppCompatActivity {
                 Color.YELLOW, android.graphics.PorterDuff.Mode.SRC_IN);
 
         // Ranked flex
+        Log.d(TAG, "Setting flex queue text...");
         ImageView img2 = (ImageView) findViewById(R.id.rankedFlexImg);
         setImage(summoner.getFlex().getLeagueTier(), img2);
         TextView rankedFlexTitle = (TextView) findViewById(R.id.rankedFlexTitle);
@@ -199,6 +184,7 @@ public class InfoActivity extends AppCompatActivity {
                 Color.YELLOW, android.graphics.PorterDuff.Mode.SRC_IN);
 
         // Ranked 3s
+        Log.d(TAG, "Setting 3s queue text...");
         ImageView img3 = (ImageView) findViewById(R.id.ranked3sImg);
         setImage(summoner.getTree().getLeagueTier(), img3);
         TextView ranked3sTitle = (TextView) findViewById(R.id.ranked3sTitle);
@@ -213,7 +199,9 @@ public class InfoActivity extends AppCompatActivity {
                 Color.YELLOW, android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
+    // set emblems for ranked queues
     private void setImage(String tier, ImageView img) {
+        Log.d(TAG, "Setting queue image: " + tier + ", " + img.toString());
         switch (tier) {
             case "UNRANKED":
                 img.setImageResource(R.drawable.provisional);
@@ -242,30 +230,25 @@ public class InfoActivity extends AppCompatActivity {
         }
     }
 
+    // refresh the page for a new summoner search
     private void search() {
+        Log.d(TAG, "Searching for a new summonger...");
         summoner = new Summoner(null, null, null, null);
         String summonerName = searchTxt.getText().toString();
-        if (summonerName == "") {return;}
-
-        String url = requestManager.getAccountJOBject(summonerName);
-        String jString = null;
-        try {
-            jString = new WebGrabber(this).execute(url).get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Task failed", Toast.LENGTH_SHORT).show();
+        if (summonerName == "") {
+            Log.d(TAG, "Search bar is empty.");
+            return;
         }
+        String jString = requestManager.getAccountJObject(summonerName);
         if (jString != null) {
             summoner.setAccount(parseAccount(jString));
             updateNameView();
-            setRankedView();
+            updateRankedView();
         } else {
+            Log.e(TAG, "Failed to find summoner: jString is null.");
             Toast.makeText(this, "Failed to find summoner.", Toast.LENGTH_SHORT).show();
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-    private void toMatchHistory() {
-
-    }
 }

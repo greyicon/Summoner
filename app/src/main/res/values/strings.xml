@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Summoner</string>
+    <string name="app_name">Summoner Search</string>
 
     <string name="ranked_solo">RANKED_SOLO_5x5</string>
     <string name="ranked_flex">RANKED_FLEX_SR</string>
