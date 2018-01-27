@@ -1,12 +1,12 @@
-package com.sam.summoner;
+package com.sam.summoner.account;
 
 //Basic account information for a summoner, ie. not ranked or gameplay information
 public class Account {
     private  int iconID;
     private String summonerName;
-    private int summonerLevel;
-    private int accountID;
-    private int summonerID;
+    private long summonerLevel;
+    private long accountID;
+    private long summonerID;
 
     public Account(int icon, String name, int level, int sid, int aid) {
         iconID = icon;
@@ -22,13 +22,13 @@ public class Account {
     public String getSummonerName() {
         return summonerName;
     }
-    public int getSummonerLevel() {
+    public long getSummonerLevel() {
         return summonerLevel;
     }
-    public int getAccountID() {
+    public long getAccountID() {
         return accountID;
     }
-    public int getSummonerID() {
+    public long getSummonerID() {
         return summonerID;
     }
 }

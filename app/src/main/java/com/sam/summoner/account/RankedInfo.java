@@ -1,4 +1,4 @@
-package com.sam.summoner;
+package com.sam.summoner.account;
 
 //Contains ladder information for a specified ranked queue for a summoner
 public class RankedInfo {

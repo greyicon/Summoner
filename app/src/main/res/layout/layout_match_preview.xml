@@ -1,12 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background3"
+    android:layout_marginTop="5dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/matchChampPortrait"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/ic_launcher" />
+        android:id="@+id/matchWin"
+        android:layout_toRightOf="@+id/matchChampPortrait"
+        android:layout_alignTop="@id/matchChampPortrait"
+        android:paddingLeft="2dp"
+        android:textColor="@color/colorText"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:text="Win"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/matchMode"
+        android:layout_alignBottom="@+id/matchChampPortrait"
+        android:layout_toRightOf="@id/matchChampPortrait"
+        android:layout_marginBottom="4dp"
+        android:paddingLeft="2dp"
+        android:textColor="@color/colorText"
+        android:textSize="10dp"
+        android:text="Normal Draft"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/matchLevel"
+        android:layout_alignLeft="@+id/matchChampPortrait"
+        android:layout_alignTop="@+id/matchChampPortrait"
+        android:layout_marginTop="2dp"
+        android:layout_marginLeft="2dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:textSize="15dp"
+        android:text="18"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/matchItemLayout"
+        android:layout_alignParentRight="true"
+        android:paddingRight="10dp">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/background2"
+            android:id="@+id/matchItem1"/>
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:id="@+id/matchItem2"
+            android:background="@drawable/background2"
+            android:layout_toRightOf="@+id/matchItem1"
+            android:paddingLeft="3dp"/>
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:id="@+id/matchItem3"
+            android:layout_toRightOf="@+id/matchItem2"
+            android:background="@drawable/background2"
+            android:paddingLeft="3dp"/>
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:id="@+id/matchItem4"
+            android:background="@drawable/background2"
+            android:layout_toRightOf="@+id/matchItem3"
+            android:paddingLeft="3dp"/>
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:id="@+id/matchItem5"
+            android:layout_toRightOf="@+id/matchItem4"
+            android:background="@drawable/background2"
+            android:paddingLeft="3dp"/>
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:id="@+id/matchItem6"
+            android:layout_toRightOf="@+id/matchItem5"
+            android:background="@drawable/background2"
+            android:paddingLeft="3dp"/>
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:id="@+id/matchItem7"
+            android:layout_toRightOf="@+id/matchItem6"
+            android:background="@drawable/background2"
+            android:paddingLeft="3dp"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:id="@+id/matchSumm2"
+        android:layout_marginRight="10dp"
+        android:layout_below="@+id/matchItemLayout"
+        android:layout_alignParentRight="true"/>
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:id="@+id/matchSumm1"
+        android:layout_toLeftOf="@+id/matchSumm2"
+        android:layout_below="@+id/matchItemLayout"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/matchStats"
+        android:layout_below="@+id/matchItemLayout"
+        android:layout_toLeftOf="@+id/matchSumm1"
+        android:layout_marginRight="6dp"
+        android:textColor="@color/colorText"
+        android:textSize="7dp"
+        android:text="Gold: 00000 | CS: 000 | KDA: 00/00/00 | Gametime: 00:00"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/matchDate"
+        android:layout_below="@+id/matchChampPortrait"
+        android:paddingLeft="15dp"
+        android:textColor="@color/colorText"
+        android:textSize="10dp"
+        android:text="11 January 2011"/>
+
+
 </RelativeLayout>

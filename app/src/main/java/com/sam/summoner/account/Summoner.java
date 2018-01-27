@@ -1,4 +1,4 @@
-package com.sam.summoner;
+package com.sam.summoner.account;
 
 //Contains all summoner information, including basic account information
 //and ranked standings in all ranked queues

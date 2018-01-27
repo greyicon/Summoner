@@ -1,4 +1,4 @@
-package com.sam.summoner;
+package com.sam.summoner.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +8,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.sam.summoner.GameStaticsManager;
+import com.sam.summoner.R;
+import com.sam.summoner.RequestManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,17 +24,17 @@ public class MainActivity extends AppCompatActivity {
     Button searchBtn;
 
     private RequestManager requestManager;
-    private ChampionManager championManager;
+    private GameStaticsManager championManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        requestManager = new RequestManager(getApplicationContext());
+        requestManager = new RequestManager(this);
         ddVersion = getDdragonVersion();
 
-        championManager = new ChampionManager(getApplicationContext());
+        championManager = new GameStaticsManager(this);
 
         // init search bar
         summonerText = (EditText) findViewById(R.id.summonerText);

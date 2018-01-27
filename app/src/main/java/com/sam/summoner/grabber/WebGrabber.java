@@ -1,4 +1,4 @@
-package com.sam.summoner;
+package com.sam.summoner.grabber;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-//Class for getting JSON string objects from Riot, holds all other processes while it loads
+// Class for getting JSON string objects from Riot, holds all other processes while it loads
 public class WebGrabber extends AsyncTask<String, String, String>{
     private String TAG = "WebGrabber";
 
@@ -59,7 +59,7 @@ public class WebGrabber extends AsyncTask<String, String, String>{
             Log.d(TAG, "Http connection closed.");
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Connection failure: " + e);
         }
 
         return jString;

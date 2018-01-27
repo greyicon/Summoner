@@ -1,5 +1,6 @@
-package com.sam.summoner;
+package com.sam.summoner.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sam.summoner.Constants;
+import com.sam.summoner.GameStaticsManager;
+import com.sam.summoner.R;
+import com.sam.summoner.RequestManager;
+import com.sam.summoner.account.Account;
+import com.sam.summoner.account.RankedInfo;
+import com.sam.summoner.account.Summoner;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,12 +30,14 @@ public class InfoActivity extends AppCompatActivity {
 
     private Summoner summoner;
     private RequestManager requestManager;
-    private ChampionManager championManager;
+    private GameStaticsManager championManager;
 
     private TextView searchTxt;
     private Button searchBtn;
     private TextView nameView;
     private TextView levelView;
+
+    private String ddVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +45,9 @@ public class InfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_info);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         String jString = getIntent().getStringExtra("jString");
-        String ddVersion = getIntent().getStringExtra("ddVersion");
+        ddVersion = getIntent().getStringExtra("ddVersion");
 
-        requestManager = new RequestManager(getApplicationContext());
+        requestManager = new RequestManager(this);
         requestManager.setDdVersion(ddVersion);
 
         summoner = new Summoner(null, null, null, null);
@@ -55,6 +66,30 @@ public class InfoActivity extends AppCompatActivity {
 
         updateNameView();
         updateRankedView();
+        //updateRecentGames();
+
+        Button soloMHbtn = (Button) findViewById(R.id.rankedSoloMHbtn);
+        Button flexMHbtn = (Button) findViewById(R.id.rankedFlexMHbtn);
+        Button treeMHbtn = (Button) findViewById(R.id.ranked3sMHbtn);
+        soloMHbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewMatchHistory(Constants.RANKED_SOLO_ID);
+            }
+        });
+        flexMHbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewMatchHistory(Constants.RANKED_FLEX_ID);
+            }
+        });
+        treeMHbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewMatchHistory(Constants.RANKED_3S_ID);
+            }
+        });
+
     }
 
     // get ranked information from a summoner, then update the layout's ranked information
@@ -69,7 +104,7 @@ public class InfoActivity extends AppCompatActivity {
     private void updateNameView() {
         Log.d(TAG, "Updating name views...");
         String name = summoner.getAccount().getSummonerName();
-        int lvl = summoner.getAccount().getSummonerLevel();
+        long lvl = summoner.getAccount().getSummonerLevel();
         nameView.setText(name);
         levelView.setText("Level " + lvl);
     }
@@ -201,7 +236,7 @@ public class InfoActivity extends AppCompatActivity {
 
     // set emblems for ranked queues
     private void setImage(String tier, ImageView img) {
-        Log.d(TAG, "Setting queue image: " + tier + ", " + img.toString());
+        Log.d(TAG, "Setting queue image: " + tier);
         switch (tier) {
             case "UNRANKED":
                 img.setImageResource(R.drawable.provisional);
@@ -250,5 +285,20 @@ public class InfoActivity extends AppCompatActivity {
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
+
+    //
+    private void viewMatchHistory(int queue) {
+        Log.d(TAG, "Starting match history load for queue: " + queue);
+        String jString = requestManager.getMatchHistoryJObject(summoner.getAccount().getAccountID(), queue, 10);
+        if (jString != null) {
+            Intent i = new Intent(this, MatchHistoryActivity.class);
+            i.putExtra("jString", jString);
+            i.putExtra("ddVersion", ddVersion);
+            startActivity(i);
+        } else {
+            Log.e(TAG, "Failed to load match history: jString is null.");
+        }
+    }
+
 
 }
