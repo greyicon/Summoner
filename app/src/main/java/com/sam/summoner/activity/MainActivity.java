@@ -31,10 +31,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        requestManager = new RequestManager(this);
-        ddVersion = getDdragonVersion();
+        requestManager = RequestManager.getInstance();
+        requestManager.updateDdVersion();
 
         championManager = new GameStaticsManager(this);
+        championManager.init();
 
         // init search bar
         summonerText = (EditText) findViewById(R.id.summonerText);
@@ -61,29 +62,10 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Got summoner info. Launching InfoActivity...");
             Intent i = new Intent(this, InfoActivity.class);
             i.putExtra("jString", jString);
-            i.putExtra("ddVersion", ddVersion);
             startActivity(i);
         } else {
             Log.e(TAG, "Failed to find summoner: " + summonerName);
             Toast.makeText(this, "Failed to find summoner.", Toast.LENGTH_SHORT).show();
         }
     }
-
-    // get and parse latest ddragon patch level, store in Constants
-    private String getDdragonVersion() {
-        Log.d(TAG, "Loading latest ddragon version code...");
-        String ret = null;
-        String jString = requestManager.getDdragonVersion();
-        if (jString != null) {
-            try {
-                JSONArray jArray = new JSONArray(jString);
-                ret = jArray.getString(0);
-                Log.d(TAG, "Ddragon version loaded.");
-            } catch (JSONException e) {
-                Log.e(TAG, "JSON error when loading ddragon version: " + e);
-            }
-        }
-        return ret;
-    }
-
 }

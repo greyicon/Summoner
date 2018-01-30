@@ -1,5 +1,6 @@
 package com.sam.summoner.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.sam.summoner.Constants;
-import com.sam.summoner.ImageRequestManager;
 import com.sam.summoner.LocalDatabaseHelper;
 import com.sam.summoner.R;
 import com.sam.summoner.RequestManager;
@@ -31,10 +31,9 @@ public class MatchHistoryActivity extends AppCompatActivity {
     public static final String TAG = "MatchHistoryActivity";
 
     private ArrayList<Match> matches;
-    private String ddVersion;
     private RequestManager requestManager;
     private LocalDatabaseHelper helper;
-    private ImageRequestManager imgRequestManager;
+    private ArrayList<String> matchStrings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +41,12 @@ public class MatchHistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_match_history);
 
         String jString = getIntent().getStringExtra("jString");
-        ddVersion = getIntent().getStringExtra("ddVersion");
 
-        requestManager = new RequestManager(this);
-        requestManager.setDdVersion(ddVersion);
-        imgRequestManager = ImageRequestManager.getInstance(this);
-
+        requestManager = RequestManager.getInstance();
         helper = new LocalDatabaseHelper(this);
-
+        matchStrings = new ArrayList<String>();
         matches = new ArrayList<Match>();
+
         parseMatches(jString);
         populateHistory();
     }
@@ -75,6 +71,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
 
     private void parseMatch(Match match) {
         String jString = requestManager.getMatchData(match.getGameID());
+        matchStrings.add(jString);
         match.populateMatch(jString);
     }
 
@@ -82,14 +79,16 @@ public class MatchHistoryActivity extends AppCompatActivity {
         Log.d(TAG, "Filling match history UI...");
         final LayoutInflater inflater = getLayoutInflater();
         final LinearLayout parent = (LinearLayout) findViewById(R.id.mhMatchList);
-        for (final Match match : matches) {
+        for (int i = 0; i < matches.size(); i++){
+            final Match match = matches.get(i);
+            final int ii = i;
             Thread t = new Thread(new Runnable() {
                 LayoutInflater infl = inflater;
                 LinearLayout par = parent;
                 Match m = match;
                 @Override
                 public void run() {
-                    populateMatch(infl, parent, m);
+                    populateMatch(infl, par, m, ii);
                 }
             });
             t.setPriority(Thread.NORM_PRIORITY - 1);
@@ -97,8 +96,9 @@ public class MatchHistoryActivity extends AppCompatActivity {
         }
     }
 
-    private void populateMatch(LayoutInflater inflater, LinearLayout parent, Match match) {
+    private void populateMatch(LayoutInflater inflater, LinearLayout parent, Match match, int i) {
         Log.d(TAG, "Formatting match...");
+        final int ii = i;
         PlayerInfo info = match.getFocusPlayerInfo();
         View view = inflater.inflate(R.layout.layout_match_preview, parent, false);
         TextView textWin = (TextView) view.findViewById(R.id.matchWin);
@@ -122,6 +122,21 @@ public class MatchHistoryActivity extends AppCompatActivity {
         setSummSpellImages(view, info.getSpellID1(), info.getSpellID2());
         Log.d(TAG, "Match formatted. Adding...");
         parent.addView(view);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToMatchView(ii);
+            }
+        });
+
+    }
+
+    private void goToMatchView(int ind) {
+        Log.d(TAG, "Going to full match view of match " + ind + " in list...");
+        Intent i = new Intent(this, MatchActivity.class);
+        i.putExtra("jString", matchStrings.get(ind));
+        i.putExtra("matchID", matches.get(ind).getGameID());
+        startActivity(i);
     }
 
     private void setStats(TextView textStats, int gold, int kills, int deaths, int assists, long gameDuration, int cs) {
@@ -164,6 +179,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
         if (i == 0) {return;}
         String imgName = helper.getItemImgFromId(i);
         String url = requestManager.getItemImageURL(imgName);
+        if (url == Constants.UNKNOWN_IMAGE) {img.setImageResource(R.drawable.unknown);}
         setImg(img, url);
     }
 
@@ -179,10 +195,10 @@ public class MatchHistoryActivity extends AppCompatActivity {
                 textMode.setText("Ranked Solo");
                 break;
             case Constants.RANKED_FLEX_ID:
-                textMode.setText("Ranked Solo");
+                textMode.setText("Ranked Flex");
                 break;
             case Constants.RANKED_3S_ID:
-                textMode.setText("Ranked Solo");
+                textMode.setText("Ranked 3s");
                 break;
             default:
                 textMode.setText("Other");

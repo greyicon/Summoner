@@ -15,11 +15,13 @@ public class GameStaticsManager {
 
     private LocalDatabaseHelper helper;
     private RequestManager requestManager;
-    Context context;
 
     public GameStaticsManager(Context context) {
         helper = new LocalDatabaseHelper(context);
-        requestManager = new RequestManager(context);
+        requestManager = RequestManager.getInstance();
+    }
+
+    public void init() {
         loadChampionDatabase();
         loadItemDatabase();
         loadSpellDatabase();
@@ -52,7 +54,6 @@ public class GameStaticsManager {
             }
         } else {
             Log.e(TAG, "Failed to load champion data: jString is empty.");
-            Toast.makeText(context, "Failed to load champions.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -85,7 +86,6 @@ public class GameStaticsManager {
             }
         } else {
             Log.e(TAG, "Failed to load item data: jString is empty.");
-            Toast.makeText(context, "Failed to load item.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -118,7 +118,6 @@ public class GameStaticsManager {
             }
         } else {
             Log.e(TAG, "Failed to load spell data: jString is empty.");
-            Toast.makeText(context, "Failed to load spell.", Toast.LENGTH_SHORT).show();
         }
     }
 

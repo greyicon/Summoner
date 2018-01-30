@@ -6,6 +6,7 @@ public class PlayerInfo {
     private String summonerName;
     private int participantID;
     private int teamID;
+    private String role;
 
     private boolean win;
     private int spellID1;
@@ -135,5 +136,13 @@ public class PlayerInfo {
 
     public void setCs(int cs) {
         this.cs = cs;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String cs) {
+        this.role = cs;
     }
 }

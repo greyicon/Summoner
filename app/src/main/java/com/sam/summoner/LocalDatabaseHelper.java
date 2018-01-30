@@ -132,6 +132,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cur = db.rawQuery("select " + CHAMP_COL3 + " from " + CHAMP_TABLE_NAME + " where " + CHAMP_COL1 + " = " + id, null);
         cur.moveToFirst();
+        if (cur.getCount() == 0) {return Constants.UNKNOWN_IMAGE;}
         str = cur.getString(0);
         return str;
     }
@@ -142,6 +143,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cur = db.rawQuery("select " + ITEM_COL3 + " from " + ITEM_TABLE_NAME + " where " + ITEM_COL1 + " = " + id, null);
         cur.moveToFirst();
+        if (cur.getCount() == 0) {return Constants.UNKNOWN_IMAGE;}
         str = cur.getString(0);
         return str;
     }
@@ -152,6 +154,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cur = db.rawQuery("select " + SS_COL3 + " from " + SS_TABLE_NAME + " where " + SS_COL1 + " = " + id, null);
         cur.moveToFirst();
+        if (cur.getCount() == 0) {return Constants.UNKNOWN_IMAGE;}
         str = cur.getString(0);
         return str;
     }

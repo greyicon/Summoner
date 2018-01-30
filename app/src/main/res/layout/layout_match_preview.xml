@@ -63,58 +63,58 @@
         android:paddingRight="10dp">
 
         <ImageView
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:background="@drawable/background2"
             android:id="@+id/matchItem1"/>
 
         <ImageView
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:id="@+id/matchItem2"
             android:background="@drawable/background2"
             android:layout_toRightOf="@+id/matchItem1"
-            android:paddingLeft="3dp"/>
+            android:layout_marginLeft="1dp"/>
 
         <ImageView
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:id="@+id/matchItem3"
             android:layout_toRightOf="@+id/matchItem2"
             android:background="@drawable/background2"
-            android:paddingLeft="3dp"/>
+            android:layout_marginLeft="1dp"/>
 
         <ImageView
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:id="@+id/matchItem4"
             android:background="@drawable/background2"
             android:layout_toRightOf="@+id/matchItem3"
-            android:paddingLeft="3dp"/>
+            android:layout_marginLeft="1dp"/>
 
         <ImageView
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:id="@+id/matchItem5"
             android:layout_toRightOf="@+id/matchItem4"
             android:background="@drawable/background2"
-            android:paddingLeft="3dp"/>
+            android:layout_marginLeft="1dp"/>
 
         <ImageView
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:id="@+id/matchItem6"
             android:layout_toRightOf="@+id/matchItem5"
             android:background="@drawable/background2"
-            android:paddingLeft="3dp"/>
+            android:layout_marginLeft="1dp"/>
 
         <ImageView
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:id="@+id/matchItem7"
             android:layout_toRightOf="@+id/matchItem6"
             android:background="@drawable/background2"
-            android:paddingLeft="3dp"/>
+            android:layout_marginLeft="1dp"/>
     </RelativeLayout>
 
     <ImageView
@@ -123,14 +123,17 @@
         android:id="@+id/matchSumm2"
         android:layout_marginRight="10dp"
         android:layout_below="@+id/matchItemLayout"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="2dp"/>
 
     <ImageView
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:id="@+id/matchSumm1"
         android:layout_toLeftOf="@+id/matchSumm2"
-        android:layout_below="@+id/matchItemLayout"/>
+        android:layout_below="@+id/matchItemLayout"
+
+        android:layout_marginTop="2dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -139,6 +142,7 @@
         android:layout_below="@+id/matchItemLayout"
         android:layout_toLeftOf="@+id/matchSumm1"
         android:layout_marginRight="6dp"
+        android:layout_marginTop="2dp"
         android:textColor="@color/colorText"
         android:textSize="7dp"
         android:text="Gold: 00000 | CS: 000 | KDA: 00/00/00 | Gametime: 00:00"/>
@@ -151,7 +155,7 @@
         android:paddingLeft="15dp"
         android:textColor="@color/colorText"
         android:textSize="10dp"
-        android:text="11 January 2011"/>
+        android:text="0000-00-00"/>
 
 
 </RelativeLayout>

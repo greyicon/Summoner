@@ -17,18 +17,22 @@ public class Match {
     private int queueID;
     private long gameDuration;
     private long gameDate;
-    private HashMap<Integer, PlayerInfo> players;
+    public HashMap<Integer, PlayerInfo> players;
 
     private Integer focusChamp = null;
     private Integer focusPlayer = null;
     private Integer winningTeam = null;
+    private Integer losingTeam = null;
 
     public Match(long matchID, int champID) {
         gameID = matchID;
         focusChamp = champID;
-        winningTeam = -1;
         players = new HashMap<Integer, PlayerInfo>();
-        // TODO
+    }
+
+    public Match(String jString) {
+        players = new HashMap<Integer, PlayerInfo>();
+        privatePop(jString);
     }
 
     public long getGameID() {
@@ -45,6 +49,25 @@ public class Match {
 
     public long getGameDuration() {
         return gameDuration;
+    }
+
+    private void privatePop(String jString) {
+        Log.d(TAG, "Populating match...");
+        try {
+            JSONObject temp = new JSONObject(jString);
+            long gameId = temp.getLong("gameId");
+            this.gameID = gameId;
+            int queueID = temp.getInt("queueId");
+            this.queueID = queueID;
+            long gameDuration = temp.getLong("gameDuration");
+            this.gameDuration = gameDuration;
+            long gameDate = temp.getLong("gameCreation");
+            this.gameDate = gameDate;
+            populatePlayers(jString);
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to parse match data: " + e);
+        }
+        Log.d(TAG, "Match populated.");
     }
 
     // gets basic game data
@@ -109,6 +132,9 @@ public class Match {
                 if (winningTeam == null && info.getWin()) {
                     winningTeam = info.getTeamID();
                 }
+                if (losingTeam == null && !info.getWin()) {
+                    losingTeam = info.getTeamID();
+                }
                 info.setKills(stats.getInt("kills"));
                 info.setDeaths(stats.getInt("deaths"));
                 info.setAssists(stats.getInt("assists"));
@@ -124,6 +150,14 @@ public class Match {
                 info.setItems(items);
                 info.setChampLevel(stats.getInt("champLevel"));
                 info.setCs(stats.getInt("totalMinionsKilled"));
+                JSONObject timeline = part.getJSONObject("timeline");
+                String lane = timeline.getString("lane");
+                if (lane == "BOTTOM") {
+                    String pos = timeline.getString("role");
+                    info.setRole(pos);
+                } else {
+                    info.setRole(lane);
+                }
             }
         } catch (JSONException e) {
             Log.e(TAG, "Failed to parse match data: " + e);
@@ -134,4 +168,34 @@ public class Match {
     public PlayerInfo getFocusPlayerInfo() {
         return players.get(focusPlayer);
     }
+
+    public ArrayList<PlayerInfo> getTeam(int teamID) {
+        ArrayList ret = new ArrayList<PlayerInfo>();
+        Integer[] keySet = (Integer[]) players.keySet().toArray();
+        for (int i = 0; i < players.size(); i++) {
+            int index = keySet[i];
+            PlayerInfo info = players.get(index);
+            if (info.getTeamID() == teamID) {
+                ret.add(info);
+            }
+        }
+        return ret;
+    }
+
+    public PlayerInfo getLaner(String role, ArrayList<PlayerInfo> playerInfos) {
+        PlayerInfo ret = null;
+        for (PlayerInfo info : playerInfos) {
+            if (info.getRole() == role) {
+                ret = info;
+                break;
+            }
+        }
+        return ret;
+    }
+
+    public int getWinner() {
+        return winningTeam;
+    }
+
 }
+

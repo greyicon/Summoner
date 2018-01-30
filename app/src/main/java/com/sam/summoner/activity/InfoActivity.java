@@ -30,14 +30,11 @@ public class InfoActivity extends AppCompatActivity {
 
     private Summoner summoner;
     private RequestManager requestManager;
-    private GameStaticsManager championManager;
 
     private TextView searchTxt;
     private Button searchBtn;
     private TextView nameView;
     private TextView levelView;
-
-    private String ddVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +42,8 @@ public class InfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_info);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         String jString = getIntent().getStringExtra("jString");
-        ddVersion = getIntent().getStringExtra("ddVersion");
 
-        requestManager = new RequestManager(this);
-        requestManager.setDdVersion(ddVersion);
+        requestManager = RequestManager.getInstance();
 
         summoner = new Summoner(null, null, null, null);
         summoner.setAccount(parseAccount(jString));
@@ -66,7 +61,6 @@ public class InfoActivity extends AppCompatActivity {
 
         updateNameView();
         updateRankedView();
-        //updateRecentGames();
 
         Button soloMHbtn = (Button) findViewById(R.id.rankedSoloMHbtn);
         Button flexMHbtn = (Button) findViewById(R.id.rankedFlexMHbtn);
@@ -289,11 +283,10 @@ public class InfoActivity extends AppCompatActivity {
     //
     private void viewMatchHistory(int queue) {
         Log.d(TAG, "Starting match history load for queue: " + queue);
-        String jString = requestManager.getMatchHistoryJObject(summoner.getAccount().getAccountID(), queue, 10);
+        String jString = requestManager.getMatchHistoryJObject(summoner.getAccount().getAccountID(), queue, Constants.MATCH_HISTORY_LENGTH);
         if (jString != null) {
             Intent i = new Intent(this, MatchHistoryActivity.class);
             i.putExtra("jString", jString);
-            i.putExtra("ddVersion", ddVersion);
             startActivity(i);
         } else {
             Log.e(TAG, "Failed to load match history: jString is null.");

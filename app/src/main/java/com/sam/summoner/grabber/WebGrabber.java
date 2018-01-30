@@ -16,19 +16,14 @@ import java.net.URL;
 public class WebGrabber extends AsyncTask<String, String, String>{
     private String TAG = "WebGrabber";
 
-    private Context context;
     private String jString;
     private ProgressDialog pd;
 
-    public WebGrabber(Context ctx) {context = ctx;}
+    public WebGrabber() {}
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        pd = new ProgressDialog(context);
-        pd.setMessage("Getting data...");
-        pd.setCancelable(false);
-        pd.show();
     }
 
     @Override
@@ -68,6 +63,5 @@ public class WebGrabber extends AsyncTask<String, String, String>{
     @Override
     protected void onPostExecute(String jString) {
         super.onPostExecute(jString);
-        if (pd.isShowing()) {pd.dismiss();}
     }
 }

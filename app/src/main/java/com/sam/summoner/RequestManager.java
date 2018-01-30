@@ -9,18 +9,24 @@ import android.widget.Toast;
 import com.sam.summoner.grabber.ImageGrabber;
 import com.sam.summoner.grabber.WebGrabber;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.concurrent.ExecutionException;
 
 // Handles URL requests by generating URLs and downloading content
 public class RequestManager {
+    private static RequestManager instance = null;
+    public static RequestManager getInstance() {
+        if (instance == null) {instance = new RequestManager();}
+        return instance;
+    }
+
     private final String TAG = "RequestManager";
-    private Context ctx;
     // ddragon version default, is updated on application launch
     private String ddVersion = "7.24.2";
 
-    public RequestManager(Context context) {
-        ctx = context;
-    }
+    private RequestManager() {}
 
     // JSON: Basic account information and constants from summoner name
     public String getAccountJObject(String name) {
@@ -103,18 +109,29 @@ public class RequestManager {
         return ret;
     }
 
-    public void setDdVersion(String ver) {
-        ddVersion = ver;
+    public void updateDdVersion() {
+        Log.d(TAG, "Loading latest ddragon version code...");
+        String ret = null;
+        String jString = getDdragonVersion();
+        if (jString != null) {
+            try {
+                JSONArray jArray = new JSONArray(jString);
+                ret = jArray.getString(0);
+                Log.d(TAG, "Ddragon version loaded.");
+            } catch (JSONException e) {
+                Log.e(TAG, "JSON error when loading ddragon version: " + e);
+            }
+        }
+        ddVersion = ret;
     }
 
     private String getJsonData(String url) {
         Log.d(TAG, "Getting JSON data...");
         String jString = null;
         try {
-            jString = new WebGrabber(ctx).execute(url).get();
+            jString = new WebGrabber().execute(url).get();
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Failed to get JSON data: " + e);
-            Toast.makeText(ctx, "Task failed", Toast.LENGTH_SHORT).show();
         }
         if (jString != null) {
             Log.d(TAG, "Got JSON data.");
@@ -123,36 +140,4 @@ public class RequestManager {
         }
         return jString;
     }
-
-    private void getBitmap(String url, final ImageView imgView) {
-        Log.d(TAG, "Starting new thread to get bitmap...");
-        final String ret = url;
-        final ImageView img = imgView;
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                getImage(ret, imgView);
-            }
-        });
-        t.setPriority(Thread.NORM_PRIORITY - 1);
-        t.run();
-    }
-
-    private void getImage(String url, ImageView img) {
-        Log.d(TAG, "Getting image...");
-        Bitmap bit = null;
-        try {
-            bit = new ImageGrabber(ctx).execute(url).get();
-        } catch (InterruptedException | ExecutionException e) {
-            Log.e(TAG, "Failed to get image data: " + e);
-            Toast.makeText(ctx, "Task failed", Toast.LENGTH_SHORT).show();
-        }
-        if (bit != null) {
-            Log.d(TAG, "Got image data.");
-        } else {
-            Log.e(TAG, "Failed to get image data: Bitmap is null.");
-        }
-        img.setImageBitmap(bit);
-    }
-
 }
