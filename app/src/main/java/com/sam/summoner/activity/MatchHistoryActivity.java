@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.sam.summoner.Constants;
-import com.sam.summoner.LocalDatabaseHelper;
+import com.sam.summoner.StaticsDatabaseHelper;
 import com.sam.summoner.R;
 import com.sam.summoner.RequestManager;
 import com.sam.summoner.match.Match;
@@ -24,7 +24,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.util.ArrayList;
 
 public class MatchHistoryActivity extends AppCompatActivity {
@@ -32,7 +31,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
 
     private ArrayList<Match> matches;
     private RequestManager requestManager;
-    private LocalDatabaseHelper helper;
+    private StaticsDatabaseHelper helper;
     private ArrayList<String> matchStrings;
 
     @Override
@@ -43,7 +42,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
         String jString = getIntent().getStringExtra("jString");
 
         requestManager = RequestManager.getInstance();
-        helper = new LocalDatabaseHelper(this);
+        helper = new StaticsDatabaseHelper(this);
         matchStrings = new ArrayList<String>();
         matches = new ArrayList<Match>();
 
@@ -101,22 +100,24 @@ public class MatchHistoryActivity extends AppCompatActivity {
         final int ii = i;
         PlayerInfo info = match.getFocusPlayerInfo();
         View view = inflater.inflate(R.layout.layout_match_preview, parent, false);
-        TextView textWin = (TextView) view.findViewById(R.id.matchWin);
+        TextView textWin = (TextView) view.findViewById(R.id.playerName);
         if (info.getWin()) {
             textWin.setText("Win");
+            view.setBackground(getDrawable(R.drawable.background5));
         } else {
             textWin.setText("Loss");
+            view.setBackground(getDrawable(R.drawable.background4));
         }
         TextView textMode = (TextView) view.findViewById(R.id.matchMode);
         setMode(textMode, match.getQueueID());
-        TextView textLevel = (TextView) view.findViewById(R.id.matchLevel);
+        TextView textLevel = (TextView) view.findViewById(R.id.playerLevel);
         textLevel.setText(String.valueOf(info.getChampLevel()));
         TextView textDate = (TextView) view.findViewById(R.id.matchDate);
         Date date = new Date(match.getGameDate());
         textDate.setText(date.toString());
         TextView textStats = (TextView) view.findViewById(R.id.matchStats);
         setStats(textStats, info.getGold(), info.getKills(), info.getDeaths(), info.getAssists(), match.getGameDuration(), info.getCs());
-        ImageView portrait = (ImageView) view.findViewById(R.id.matchChampPortrait);
+        ImageView portrait = (ImageView) view.findViewById(R.id.playerChampPortrait);
         setPortrait(portrait, info.getChampionID());
         setItemImages(view, info.getItems());
         setSummSpellImages(view, info.getSpellID1(), info.getSpellID2());
@@ -140,9 +141,13 @@ public class MatchHistoryActivity extends AppCompatActivity {
     }
 
     private void setStats(TextView textStats, int gold, int kills, int deaths, int assists, long gameDuration, int cs) {
-        Time time = new Time(gameDuration);
+        Long l = new Long(gameDuration);
+        double time = l.doubleValue();
+        int mins = (int) Math.floor(time/60);
+        int secs = (int) gameDuration % 60;
+
         String ret = "Gold: " + gold + " | CS: " + cs + " | KDA: " + kills + "/"
-                + deaths + "/" + assists + " | Gametime: " + time.toString();
+                + deaths + "/" + assists + " | Gametime: " + mins + ":" + secs;
         textStats.setText(ret);
     }
 

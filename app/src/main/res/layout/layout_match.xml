@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/background3"
+    android:id="@+id/playerBackground"
     android:layout_marginTop="5dp"
     android:paddingTop="5dp"
     android:paddingBottom="5dp">
@@ -22,25 +23,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/playerName"
-        android:layout_toRightOf="@+id/playerChampPortrait"
-        android:layout_alignTop="@id/playerChampPortrait"
-        android:paddingLeft="2dp"
         android:textColor="@color/colorText"
         android:textStyle="bold"
         android:textSize="20dp"
-        android:text="Win"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/matchMode"
-        android:layout_alignBottom="@+id/playerChampPortrait"
-        android:layout_toRightOf="@id/playerChampPortrait"
-        android:layout_marginBottom="4dp"
-        android:paddingLeft="2dp"
-        android:textColor="@color/colorText"
-        android:textSize="10dp"
-        android:text="Normal Draft"/>
+        android:text="This Is My Name Kappa"
+        android:layout_below="@+id/playerSumm1"
+        android:layout_toRightOf="@+id/playerLevel"
+        android:layout_toEndOf="@+id/playerLevel" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -58,61 +47,61 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/matchItemLayout"
+        android:id="@+id/playerItemLayout"
         android:layout_alignParentRight="true"
         android:paddingRight="10dp">
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:background="@drawable/background2"
-            android:id="@+id/matchItem1"/>
+            android:id="@+id/playerItem1"/>
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:id="@+id/matchItem2"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:id="@+id/playerItem2"
             android:background="@drawable/background2"
-            android:layout_toRightOf="@+id/matchItem1"
+            android:layout_toRightOf="@+id/playerItem1"
             android:layout_marginLeft="1dp"/>
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:id="@+id/matchItem3"
-            android:layout_toRightOf="@+id/matchItem2"
-            android:background="@drawable/background2"
-            android:layout_marginLeft="1dp"/>
-
-        <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:id="@+id/matchItem4"
-            android:background="@drawable/background2"
-            android:layout_toRightOf="@+id/matchItem3"
-            android:layout_marginLeft="1dp"/>
-
-        <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:id="@+id/matchItem5"
-            android:layout_toRightOf="@+id/matchItem4"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:id="@+id/playerItem3"
+            android:layout_toRightOf="@+id/playerItem2"
             android:background="@drawable/background2"
             android:layout_marginLeft="1dp"/>
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:id="@+id/matchItem6"
-            android:layout_toRightOf="@+id/matchItem5"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:id="@+id/playerItem4"
+            android:background="@drawable/background2"
+            android:layout_toRightOf="@+id/playerItem3"
+            android:layout_marginLeft="1dp"/>
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:id="@+id/playerItem5"
+            android:layout_toRightOf="@+id/playerItem4"
             android:background="@drawable/background2"
             android:layout_marginLeft="1dp"/>
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:id="@+id/matchItem7"
-            android:layout_toRightOf="@+id/matchItem6"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:id="@+id/playerItem6"
+            android:layout_toRightOf="@+id/playerItem5"
+            android:background="@drawable/background2"
+            android:layout_marginLeft="1dp"/>
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:id="@+id/playerItem7"
+            android:layout_toRightOf="@+id/playerItem6"
             android:background="@drawable/background2"
             android:layout_marginLeft="1dp"/>
     </RelativeLayout>
@@ -120,42 +109,31 @@
     <ImageView
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:id="@+id/matchSumm2"
+        android:id="@+id/playerSumm2"
         android:layout_marginRight="10dp"
-        android:layout_below="@+id/matchItemLayout"
+        android:layout_below="@+id/playerItemLayout"
         android:layout_alignParentRight="true"
         android:layout_marginTop="2dp"/>
 
     <ImageView
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:id="@+id/matchSumm1"
-        android:layout_toLeftOf="@+id/matchSumm2"
-        android:layout_below="@+id/matchItemLayout"
+        android:id="@+id/playerSumm1"
+        android:layout_toLeftOf="@+id/playerSumm2"
+        android:layout_below="@+id/playerItemLayout"
 
         android:layout_marginTop="2dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/matchStats"
-        android:layout_below="@+id/matchItemLayout"
-        android:layout_toLeftOf="@+id/matchSumm1"
-        android:layout_marginRight="6dp"
-        android:layout_marginTop="2dp"
-        android:textColor="@color/colorText"
-        android:textSize="7dp"
-        android:text="Gold: 00000 | CS: 000 | KDA: 00/00/00 | Gametime: 00:00"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/matchDate"
-        android:layout_below="@+id/playerChampPortrait"
-        android:paddingLeft="15dp"
+        android:id="@+id/playerStats"
         android:textColor="@color/colorText"
         android:textSize="10dp"
-        android:text="0000-00-00"/>
+        android:text="Gold: 00000 | CS: 000 | KDA: 00/00/00 | Gametime: 00:00"
+        android:layout_alignTop="@+id/playerSumm1"
+        android:layout_toLeftOf="@id/playerSumm1"
+        android:layout_marginRight="5dp"/>
 
 
 </RelativeLayout>

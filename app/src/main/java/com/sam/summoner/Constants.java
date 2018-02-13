@@ -1,7 +1,7 @@
 package com.sam.summoner;
 
 public interface Constants {
-    String API_KEY = "RGAPI-81937ee1-e189-4009-9fde-b33952473c18";
+    String API_KEY = "RGAPI-95d25e2b-dac3-42d2-95c0-85ab69a1ba45";
 
     int NORM_DRAFT_ID = 400;
     int RANKED_SOLO_ID = 420;
@@ -19,6 +19,9 @@ public interface Constants {
     String ITEM_TABLE_NAME = "item_table";
     String SS_TABLE_NAME = "summspell_table";
 
+    String SUMMONER_DB_NAME = "summoner_data.db";
+    String FRIENDS_TABLE_NAME = "friends_table";
+
     String UNKNOWN_IMAGE = "UNKNOWN";
 
     // Role names
@@ -30,7 +33,6 @@ public interface Constants {
 
     /*
         TODOLIST
-        - Full match view with all players on click from match history
         - Champ mastery/winrate section (InfoActivity)
         - Overall match history on main info page (InfoActivity)
         - Match history expansion (MatchHistoryActivity, InfoActivity)

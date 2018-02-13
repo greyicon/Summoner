@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sam.summoner.Constants;
-import com.sam.summoner.GameStaticsManager;
+import com.sam.summoner.StaticsDatabaseHelper;
 import com.sam.summoner.R;
 import com.sam.summoner.RequestManager;
 import com.sam.summoner.account.Account;
@@ -30,6 +30,7 @@ public class InfoActivity extends AppCompatActivity {
 
     private Summoner summoner;
     private RequestManager requestManager;
+    private StaticsDatabaseHelper helper;
 
     private TextView searchTxt;
     private Button searchBtn;
@@ -44,6 +45,7 @@ public class InfoActivity extends AppCompatActivity {
         String jString = getIntent().getStringExtra("jString");
 
         requestManager = RequestManager.getInstance();
+        helper = new StaticsDatabaseHelper(this);
 
         summoner = new Summoner(null, null, null, null);
         summoner.setAccount(parseAccount(jString));
@@ -280,7 +282,6 @@ public class InfoActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-    //
     private void viewMatchHistory(int queue) {
         Log.d(TAG, "Starting match history load for queue: " + queue);
         String jString = requestManager.getMatchHistoryJObject(summoner.getAccount().getAccountID(), queue, Constants.MATCH_HISTORY_LENGTH);

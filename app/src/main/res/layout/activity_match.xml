@@ -1,9 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.sam.summoner.activity.MatchActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/matchLayout">
+
+            <TextView
+                android:id="@+id/blueTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25dp"
+                android:textColor="@color/colorText"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_centerHorizontal="true"
+                android:text="Blue Team - WIN" />
+
+            <TextView
+                android:id="@+id/blueKDA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17dp"
+                android:textColor="@color/colorText"
+                android:layout_marginLeft="10dp"
+                android:layout_below="@id/blueTitle"
+                android:text="KDA: 00/00/00" />
+
+            <TextView
+                android:id="@+id/blueGold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17dp"
+                android:textColor="@color/colorText"
+                android:layout_marginLeft="30dp"
+                android:layout_alignBaseline="@+id/blueKDA"
+                android:layout_toRightOf="@id/blueKDA"
+                android:text="Gold: 100000" />
+
+            <LinearLayout
+                android:id="@+id/bluePlayers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/blueGold"
+                android:layout_marginTop="7dp"
+                android:orientation="vertical">
+
+                <!-- DYNAMICALLY FILLING IN MatchActivity -->
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/redTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25dp"
+                android:textColor="@color/colorText"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/bluePlayers"
+                android:text="Red Team - WIN" />
+
+            <TextView
+                android:id="@+id/redKDA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17dp"
+                android:textColor="@color/colorText"
+                android:layout_marginLeft="10dp"
+                android:layout_below="@id/redTitle"
+                android:text="KDA: 00/00/00" />
+
+            <TextView
+                android:id="@+id/redGold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17dp"
+                android:textColor="@color/colorText"
+                android:layout_marginLeft="30dp"
+                android:layout_alignBaseline="@+id/redKDA"
+                android:layout_toRightOf="@id/redKDA"
+                android:text="Gold: 100000" />
+
+            <LinearLayout
+                android:id="@+id/redPlayers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/redGold"
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="7dp"
+                android:orientation="vertical">
+
+                <!-- DYNAMICALLY FILLING IN MatchActivity -->
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+
+</RelativeLayout>

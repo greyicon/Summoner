@@ -22,6 +22,7 @@ public class RequestManager {
         return instance;
     }
 
+    private String API_KEY = Constants.API_KEY;
     private final String TAG = "RequestManager";
     // ddragon version default, is updated on application launch
     private String ddVersion = "7.24.2";
@@ -32,7 +33,7 @@ public class RequestManager {
     public String getAccountJObject(String name) {
         Log.d(TAG, "Handling request: getAccountJObject: " + name + "...");
         String ret = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/"
-        + name + "?api_key=" + Constants.API_KEY;
+        + name + "?api_key=" + API_KEY;
         return getJsonData(ret);
     }
 
@@ -40,7 +41,7 @@ public class RequestManager {
     public String getRankJArray(long id) {
         Log.d(TAG, "Handling request: getRankJArray...");
         String ret = "https://na1.api.riotgames.com/lol/league/v3/positions/by-summoner/"
-                + id + "?api_key=" + Constants.API_KEY;
+                + id + "?api_key=" + API_KEY;
         return getJsonData(ret);
     }
 
@@ -48,7 +49,7 @@ public class RequestManager {
     public String getMatchHistoryJObject(long aid, int queue, int numGames) {
         Log.d(TAG, "Handling request: getMatchHistoryJObject...");
         String ret = "https://na1.api.riotgames.com/lol/match/v3/matchlists/by-account/" +
-                + aid + "?queue=" + queue + "&endIndex=" + numGames + "&api_key=" + Constants.API_KEY;
+                + aid + "?queue=" + queue + "&endIndex=" + numGames + "&api_key=" + API_KEY;
         return getJsonData(ret);
     }
 
@@ -56,7 +57,7 @@ public class RequestManager {
     public String getRecentMatchesJObject(long aid) {
         Log.d(TAG, "Handling request: getRecentMatchesJObject...");
         String ret = "https://na1.api.riotgames.com/lol/match/v3/matchlists/by-account/"
-                + aid + "/recent?api_key=" + Constants.API_KEY;
+                + aid + "/recent?api_key=" + API_KEY;
         return getJsonData(ret);
     }
 
@@ -81,7 +82,7 @@ public class RequestManager {
     public String getMatchData(long matchID) {
         Log.d(TAG, "Handling request: getMatchData: " + matchID + "...");
         String ret = "https://na1.api.riotgames.com/lol/match/v3/matches/" + matchID
-                + "?api_key=" + Constants.API_KEY;
+                + "?api_key=" + API_KEY;
         return getJsonData(ret);
     }
 
@@ -123,6 +124,10 @@ public class RequestManager {
             }
         }
         ddVersion = ret;
+    }
+
+    public void setApiKey(String key) {
+        API_KEY = key;
     }
 
     private String getJsonData(String url) {

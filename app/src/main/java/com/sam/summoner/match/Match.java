@@ -121,7 +121,7 @@ public class Match {
                 PlayerInfo info = players.get(partID);
                 int champ = part.getInt("championId");
                 info.setChampionID(champ);
-                if (champ == focusChamp) {
+                if (focusChamp != null && champ == focusChamp) {
                     focusPlayer = partID;
                 }
                 info.setSpellID1(part.getInt("spell1Id"));
@@ -152,7 +152,7 @@ public class Match {
                 info.setCs(stats.getInt("totalMinionsKilled"));
                 JSONObject timeline = part.getJSONObject("timeline");
                 String lane = timeline.getString("lane");
-                if (lane == "BOTTOM") {
+                if (lane.equals("BOTTOM")) {
                     String pos = timeline.getString("role");
                     info.setRole(pos);
                 } else {
@@ -171,9 +171,9 @@ public class Match {
 
     public ArrayList<PlayerInfo> getTeam(int teamID) {
         ArrayList ret = new ArrayList<PlayerInfo>();
-        Integer[] keySet = (Integer[]) players.keySet().toArray();
+        Object[] keySet = players.keySet().toArray();
         for (int i = 0; i < players.size(); i++) {
-            int index = keySet[i];
+            int index = (int) keySet[i];
             PlayerInfo info = players.get(index);
             if (info.getTeamID() == teamID) {
                 ret.add(info);
@@ -185,7 +185,7 @@ public class Match {
     public PlayerInfo getLaner(String role, ArrayList<PlayerInfo> playerInfos) {
         PlayerInfo ret = null;
         for (PlayerInfo info : playerInfos) {
-            if (info.getRole() == role) {
+            if (info.getRole().equals(role)) {
                 ret = info;
                 break;
             }
@@ -197,5 +197,36 @@ public class Match {
         return winningTeam;
     }
 
+    public int getTeamKills(ArrayList<PlayerInfo> team) {
+        int ret = 0;
+        for (PlayerInfo info : team) {
+            ret += info.getKills();
+        }
+        return ret;
+    }
+
+    public int getTeamDeaths(ArrayList<PlayerInfo> team) {
+        int ret = 0;
+        for (PlayerInfo info : team) {
+            ret += info.getDeaths();
+        }
+        return ret;
+    }
+
+    public int getTeamAssists(ArrayList<PlayerInfo> team) {
+        int ret = 0;
+        for (PlayerInfo info : team) {
+            ret += info.getAssists();
+        }
+        return ret;
+    }
+
+    public int getTeamGold(ArrayList<PlayerInfo> team) {
+        int ret = 0;
+        for (PlayerInfo info : team) {
+            ret += info.getGold();
+        }
+        return ret;
+    }
 }
 

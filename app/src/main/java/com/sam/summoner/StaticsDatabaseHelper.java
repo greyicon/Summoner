@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class LocalDatabaseHelper extends SQLiteOpenHelper {
-    private final String TAG = "LocalDatabaseHelper";
+public class StaticsDatabaseHelper extends SQLiteOpenHelper {
+    private final String TAG = "StaticsDatabaseHelper";
 
     public static final String DATABASE_NAME = Constants.STATIC_DB_NAME;
     public static final String CHAMP_TABLE_NAME = Constants.CHAMP_TABLE_NAME;
@@ -24,7 +24,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     public static final String SS_COL2 = "name";
     public static final String SS_COL3 = "image";
 
-    public LocalDatabaseHelper(Context context) {
+    public StaticsDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
 

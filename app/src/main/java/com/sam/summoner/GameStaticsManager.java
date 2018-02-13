@@ -2,9 +2,7 @@ package com.sam.summoner;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,11 +11,11 @@ import java.util.Iterator;
 public class GameStaticsManager {
     private final String TAG = "GameStaticsManager";
 
-    private LocalDatabaseHelper helper;
+    private StaticsDatabaseHelper helper;
     private RequestManager requestManager;
 
     public GameStaticsManager(Context context) {
-        helper = new LocalDatabaseHelper(context);
+        helper = new StaticsDatabaseHelper(context);
         requestManager = RequestManager.getInstance();
     }
 
