@@ -1,12 +1,6 @@
 package com.sam.summoner;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.sam.summoner.grabber.ImageGrabber;
 import com.sam.summoner.grabber.WebGrabber;
 
 import org.json.JSONArray;
@@ -22,7 +16,7 @@ public class RequestManager {
         return instance;
     }
 
-    private String API_KEY = Constants.API_KEY;
+    private String API_KEY;
     private final String TAG = "RequestManager";
     // ddragon version default, is updated on application launch
     private String ddVersion = "7.24.2";

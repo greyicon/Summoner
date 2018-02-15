@@ -13,12 +13,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.sam.summoner.Constants;
 import com.sam.summoner.StaticsDatabaseHelper;
 import com.sam.summoner.R;
 import com.sam.summoner.RequestManager;
-import com.sam.summoner.match.Match;
-import com.sam.summoner.match.PlayerInfo;
+import com.sam.summoner.match.MatchDto;
+import com.sam.summoner.match.ParticipantDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,9 @@ public class MatchActivity extends AppCompatActivity {
     public static final String TAG = "MatchActivity";
 
     private RequestManager requestManager;
+    private Gson gson;
     private StaticsDatabaseHelper helper;
-    private Match match;
+    private MatchDto matchDto;
 
     private int winningTeam;
 
@@ -40,11 +42,13 @@ public class MatchActivity extends AppCompatActivity {
         requestManager = RequestManager.getInstance();
         helper = new StaticsDatabaseHelper(this);
 
+        gson = new Gson();
+
         String jString = getIntent().getStringExtra("jString");
 
-        match = new Match(jString);
+        matchDto = gson.fromJson(jString, MatchDto.class);
 
-        winningTeam = match.getWinner();
+        winningTeam = matchDto.getWinner();
 
         formatHeaders();
         formatPlayers();
@@ -70,15 +74,15 @@ public class MatchActivity extends AppCompatActivity {
 
     // Set team KDAs
     private void setKDAs() {
-        ArrayList<PlayerInfo> blueTeam = match.getTeam(100);
-        int blueKills = match.getTeamKills(blueTeam);
-        int blueDeaths = match.getTeamDeaths(blueTeam);
-        int blueAssists = match.getTeamAssists(blueTeam);
+        ArrayList<ParticipantDto> blueTeam = matchDto.getTeam(100);
+        int blueKills = matchDto.getTeamKills(blueTeam);
+        int blueDeaths = matchDto.getTeamDeaths(blueTeam);
+        int blueAssists = matchDto.getTeamAssists(blueTeam);
 
-        ArrayList<PlayerInfo> redTeam = match.getTeam(200);
-        int redKills = match.getTeamKills(redTeam);
-        int redDeaths = match.getTeamDeaths(redTeam);
-        int redAssists = match.getTeamAssists(redTeam);
+        ArrayList<ParticipantDto> redTeam = matchDto.getTeam(200);
+        int redKills = matchDto.getTeamKills(redTeam);
+        int redDeaths = matchDto.getTeamDeaths(redTeam);
+        int redAssists = matchDto.getTeamAssists(redTeam);
 
         TextView blueView = (TextView) findViewById(R.id.blueKDA);
         blueView.setText("KDA: " + blueKills + "/" + blueDeaths + "/" + blueAssists);
@@ -88,11 +92,11 @@ public class MatchActivity extends AppCompatActivity {
 
     // Set team golds
     private void setGolds() {
-        ArrayList<PlayerInfo> blueTeam = match.getTeam(100);
-        int blueGold = match.getTeamGold(blueTeam);
+        ArrayList<ParticipantDto> blueTeam = matchDto.getTeam(100);
+        int blueGold = matchDto.getTeamGold(blueTeam);
 
-        ArrayList<PlayerInfo> redTeam = match.getTeam(200);
-        int redGold = match.getTeamGold(redTeam);
+        ArrayList<ParticipantDto> redTeam = matchDto.getTeam(200);
+        int redGold = matchDto.getTeamGold(redTeam);
 
         TextView blueView = (TextView) findViewById(R.id.blueGold);
         blueView.setText("Gold: " + blueGold);
@@ -104,19 +108,19 @@ public class MatchActivity extends AppCompatActivity {
     private void formatPlayers() {
         LayoutInflater inflater = getLayoutInflater();
         LinearLayout parent = (LinearLayout) findViewById(R.id.bluePlayers);
-        ArrayList<PlayerInfo> blueTeam = match.getTeam(100);
+        ArrayList<ParticipantDto> blueTeam = matchDto.getTeam(100);
         distributePlayers(blueTeam);
         for (int i = 0; i < 5; i++) {
-            PlayerInfo player = getPlayer(blueTeam, i);
+            ParticipantDto player = getPlayer(blueTeam, i);
             View view = inflater.inflate(R.layout.layout_match, parent, false);
             setPlayerLayout(player, view);
             parent.addView(view);
         }
         parent = (LinearLayout) findViewById(R.id.redPlayers);
-        ArrayList<PlayerInfo> redTeam = match.getTeam(200);
+        ArrayList<ParticipantDto> redTeam = matchDto.getTeam(200);
         distributePlayers(redTeam);
         for (int i = 0; i < 5; i++) {
-            PlayerInfo player = getPlayer(redTeam, i);
+            ParticipantDto player = getPlayer(redTeam, i);
             View view = inflater.inflate(R.layout.layout_match, parent, false);
             setPlayerLayout(player, view);
             parent.addView(view);
@@ -125,9 +129,9 @@ public class MatchActivity extends AppCompatActivity {
 
     // Redistribute player roles if there are duplicates
     //      ex: Two players are put mid in matchmaking
-    private void distributePlayers(ArrayList<PlayerInfo> team) {
+    private void distributePlayers(ArrayList<ParticipantDto> team) {
         int[] counts = {0,0,0,0,0};
-        for (PlayerInfo player : team) {
+        for (ParticipantDto player : team) {
             switch (player.getRole()) {
                 case Constants.ROLE_TOP:
                     counts[0] += 1;
@@ -157,8 +161,8 @@ public class MatchActivity extends AppCompatActivity {
     }
 
     // Helper to move players from overpopulated roles into underpopulated ones
-    private void movePlayer(int pos, int newPos, ArrayList<PlayerInfo> team) {
-        PlayerInfo info = getPlayer(team, pos);
+    private void movePlayer(int pos, int newPos, ArrayList<ParticipantDto> team) {
+        ParticipantDto info = getPlayer(team, pos);
         switch (newPos) {
             case 0:
                 info.setRole(Constants.ROLE_TOP);
@@ -190,18 +194,18 @@ public class MatchActivity extends AppCompatActivity {
     }
 
     // Get a player from a team with a certain role
-    private PlayerInfo getPlayer(ArrayList<PlayerInfo> team, int i) {
+    private ParticipantDto getPlayer(ArrayList<ParticipantDto> team, int i) {
         switch (i) {
             case 0:
-                return match.getLaner(Constants.ROLE_TOP, team);
+                return matchDto.getLaner(Constants.ROLE_TOP, team);
             case 1:
-                return match.getLaner(Constants.ROLE_JUNGLE, team);
+                return matchDto.getLaner(Constants.ROLE_JUNGLE, team);
             case 2:
-                return match.getLaner(Constants.ROLE_MID, team);
+                return matchDto.getLaner(Constants.ROLE_MID, team);
             case 3:
-                return match.getLaner(Constants.ROLE_ADC, team);
+                return matchDto.getLaner(Constants.ROLE_ADC, team);
             case 4:
-                return match.getLaner(Constants.ROLE_SUPPORT, team);
+                return matchDto.getLaner(Constants.ROLE_SUPPORT, team);
             default:
                 return null;
         }
@@ -213,26 +217,27 @@ public class MatchActivity extends AppCompatActivity {
     }
 
     // Format player specific information
-    private void setPlayerLayout(final PlayerInfo player, View view) {
-        setBackground(player.getTeamID(), view);
+    private void setPlayerLayout(final ParticipantDto player, View view) {
+        int id = player.participantId;
+        final String name = matchDto.getSummonerNameFromPartId(id);
+        setBackground(player.teamId, view);
         TextView playerName = (TextView) view.findViewById(R.id.playerName);
-        playerName.setText(player.getSummonerName());
+        playerName.setText(name);
         TextView playerLevel = (TextView) view.findViewById(R.id.playerLevel);
-        playerLevel.setText(String.valueOf(player.getChampLevel()));
+        playerLevel.setText(String.valueOf(player.stats.champLevel));
         TextView playerStats = (TextView) view.findViewById(R.id.playerStats);
-        playerStats.setText("Gold: " + player.getGold() + " | CS: " + player.getCs() + " | KDA: "
-                + player.getKills() + "/" + player.getDeaths() + "/" + player.getAssists());
-        setPlayerChamp(player.getChampionID(), view);
+        playerStats.setText("Gold: " + player.stats.goldEarned + " | CS: " + player.stats.totalMinionsKilled + " | KDA: "
+                + player.stats.kills + "/" + player.stats.deaths + "/" + player.stats.assists);
+        setPlayerChamp(player.championId, view);
         setPlayerItems(player.getItems(), view);
-        String summ1url = requestManager.getSpellImageURL(helper.getSpellImgFromId(player.getSpellID1()));
+        String summ1url = requestManager.getSpellImageURL(helper.getSpellImgFromId(player.spell1Id));
         setImg(summ1url, (ImageView) view.findViewById(R.id.playerSumm1));
-        String summ2url = requestManager.getSpellImageURL(helper.getSpellImgFromId(player.getSpellID2()));
+        String summ2url = requestManager.getSpellImageURL(helper.getSpellImgFromId(player.spell2Id));
         setImg(summ2url, (ImageView) view.findViewById(R.id.playerSumm2));
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final PlayerInfo p = player;
-                search(p.getSummonerName());
+                search(name);
             }
         });
     }
@@ -281,18 +286,9 @@ public class MatchActivity extends AppCompatActivity {
     }
 
     private void search(String name) {
-        Log.d(TAG, "Starting summoner search...");
-        String summonerName = name;
-        if (summonerName == "") {return;}
-        String jString = requestManager.getAccountJObject(summonerName);
-        if (jString != null) {
-            Log.d(TAG, "Got summoner info. Launching InfoActivity...");
-            Intent i = new Intent(this, InfoActivity.class);
-            i.putExtra("jString", jString);
-            startActivity(i);
-        } else {
-            Log.e(TAG, "Failed to find summoner: " + summonerName);
-            Toast.makeText(this, "Failed to find summoner.", Toast.LENGTH_SHORT).show();
-        }
+        Intent i = new Intent();
+        i.putExtra("summName", name);
+        setResult(RESULT_OK, i);
+        finish();
     }
 }

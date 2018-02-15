@@ -12,12 +12,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.sam.summoner.Constants;
 import com.sam.summoner.StaticsDatabaseHelper;
 import com.sam.summoner.R;
 import com.sam.summoner.RequestManager;
-import com.sam.summoner.match.Match;
-import com.sam.summoner.match.PlayerInfo;
+import com.sam.summoner.match.MatchDto;
+import com.sam.summoner.match.ParticipantDto;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 public class MatchHistoryActivity extends AppCompatActivity {
     public static final String TAG = "MatchHistoryActivity";
 
-    private ArrayList<Match> matches;
+    private ArrayList<MatchDto> matches;
     private RequestManager requestManager;
     private StaticsDatabaseHelper helper;
     private ArrayList<String> matchStrings;
@@ -44,7 +45,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
         requestManager = RequestManager.getInstance();
         helper = new StaticsDatabaseHelper(this);
         matchStrings = new ArrayList<String>();
-        matches = new ArrayList<Match>();
+        matches = new ArrayList<MatchDto>();
 
         parseMatches(jString);
         populateHistory();
@@ -58,20 +59,16 @@ public class MatchHistoryActivity extends AppCompatActivity {
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject match = jArray.getJSONObject(i);
                 long matchID = match.getLong("gameId");
-                int championID = match.getInt("champion");
-                Match newMatch = new Match(matchID, championID);
-                parseMatch(newMatch);
-                matches.add(newMatch);
+                int champion = match.getInt("champion");
+                String matchString = requestManager.getMatchData(matchID);
+                MatchDto matchDto = new Gson().fromJson(matchString, MatchDto.class);
+                matchDto.focusChamp = champion;
+                matches.add(matchDto);
+                matchStrings.add(matchString);
             }
         } catch (JSONException e) {
             Log.e(TAG, "Failed to parse matchlist: " + e);
         }
-    }
-
-    private void parseMatch(Match match) {
-        String jString = requestManager.getMatchData(match.getGameID());
-        matchStrings.add(jString);
-        match.populateMatch(jString);
     }
 
     private void populateHistory() {
@@ -79,12 +76,12 @@ public class MatchHistoryActivity extends AppCompatActivity {
         final LayoutInflater inflater = getLayoutInflater();
         final LinearLayout parent = (LinearLayout) findViewById(R.id.mhMatchList);
         for (int i = 0; i < matches.size(); i++){
-            final Match match = matches.get(i);
+            final MatchDto matchDto = matches.get(i);
             final int ii = i;
             Thread t = new Thread(new Runnable() {
                 LayoutInflater infl = inflater;
                 LinearLayout par = parent;
-                Match m = match;
+                MatchDto m = matchDto;
                 @Override
                 public void run() {
                     populateMatch(infl, par, m, ii);
@@ -95,13 +92,13 @@ public class MatchHistoryActivity extends AppCompatActivity {
         }
     }
 
-    private void populateMatch(LayoutInflater inflater, LinearLayout parent, Match match, int i) {
+    private void populateMatch(LayoutInflater inflater, LinearLayout parent, MatchDto match, int i) {
         Log.d(TAG, "Formatting match...");
         final int ii = i;
-        PlayerInfo info = match.getFocusPlayerInfo();
+        ParticipantDto player = match.getFocusPlayerInfo();
         View view = inflater.inflate(R.layout.layout_match_preview, parent, false);
         TextView textWin = (TextView) view.findViewById(R.id.playerName);
-        if (info.getWin()) {
+        if (player.stats.win) {
             textWin.setText("Win");
             view.setBackground(getDrawable(R.drawable.background5));
         } else {
@@ -109,18 +106,18 @@ public class MatchHistoryActivity extends AppCompatActivity {
             view.setBackground(getDrawable(R.drawable.background4));
         }
         TextView textMode = (TextView) view.findViewById(R.id.matchMode);
-        setMode(textMode, match.getQueueID());
+        setMode(textMode, match.queueId);
         TextView textLevel = (TextView) view.findViewById(R.id.playerLevel);
-        textLevel.setText(String.valueOf(info.getChampLevel()));
+        textLevel.setText(String.valueOf(player.stats.champLevel));
         TextView textDate = (TextView) view.findViewById(R.id.matchDate);
-        Date date = new Date(match.getGameDate());
+        Date date = new Date(match.gameCreation);
         textDate.setText(date.toString());
         TextView textStats = (TextView) view.findViewById(R.id.matchStats);
-        setStats(textStats, info.getGold(), info.getKills(), info.getDeaths(), info.getAssists(), match.getGameDuration(), info.getCs());
+        setStats(textStats, player.stats.goldEarned, player.stats.kills, player.stats.deaths, player.stats.assists, match.gameDuration, player.stats.totalMinionsKilled);
         ImageView portrait = (ImageView) view.findViewById(R.id.playerChampPortrait);
-        setPortrait(portrait, info.getChampionID());
-        setItemImages(view, info.getItems());
-        setSummSpellImages(view, info.getSpellID1(), info.getSpellID2());
+        setPortrait(portrait, player.championId);
+        setItemImages(view, player.getItems());
+        setSummSpellImages(view, player.spell1Id, player.spell2Id);
         Log.d(TAG, "Match formatted. Adding...");
         parent.addView(view);
         view.setOnClickListener(new View.OnClickListener() {
@@ -136,8 +133,17 @@ public class MatchHistoryActivity extends AppCompatActivity {
         Log.d(TAG, "Going to full match view of match " + ind + " in list...");
         Intent i = new Intent(this, MatchActivity.class);
         i.putExtra("jString", matchStrings.get(ind));
-        i.putExtra("matchID", matches.get(ind).getGameID());
-        startActivity(i);
+        i.putExtra("matchID", matches.get(ind).gameId);
+        startActivityForResult(i, 2);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            setResult(RESULT_OK, data);
+            finish();
+        }
     }
 
     private void setStats(TextView textStats, int gold, int kills, int deaths, int assists, long gameDuration, int cs) {
