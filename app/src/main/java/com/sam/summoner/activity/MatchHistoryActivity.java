@@ -171,26 +171,40 @@ public class MatchHistoryActivity extends AppCompatActivity {
     private void setItemImages(View view, ArrayList<Integer> items) {
         RelativeLayout relativeLayout = (RelativeLayout) view.findViewById(R.id.matchItemLayout);
         ImageView img1 = (ImageView) relativeLayout.findViewById(R.id.matchItem1);
-        setItemimage(img1, items.get(0));
+        if (items.get(0) != 0) {
+            setItemimage(img1, items.get(0));
+        }
         ImageView img2 = (ImageView) relativeLayout.findViewById(R.id.matchItem2);
-        setItemimage(img2, items.get(1));
+        if (items.get(1) != 0) {
+            setItemimage(img2, items.get(1));
+        }
         ImageView img3 = (ImageView) relativeLayout.findViewById(R.id.matchItem3);
-        setItemimage(img3, items.get(2));
+        if (items.get(2) != 0) {
+            setItemimage(img3, items.get(2));
+        }
         ImageView img4 = (ImageView) relativeLayout.findViewById(R.id.matchItem4);
-        setItemimage(img4, items.get(3));
+        if (items.get(3) != 0) {
+            setItemimage(img4, items.get(3));
+        }
         ImageView img5 = (ImageView) relativeLayout.findViewById(R.id.matchItem5);
-        setItemimage(img5, items.get(4));
+        if (items.get(4) != 0) {
+            setItemimage(img5, items.get(4));
+        }
         ImageView img6 = (ImageView) relativeLayout.findViewById(R.id.matchItem6);
-        setItemimage(img6, items.get(5));
+        if (items.get(5) != 0) {
+            setItemimage(img6, items.get(5));
+        }
         ImageView img7 = (ImageView) relativeLayout.findViewById(R.id.matchItem7);
-        setItemimage(img7, items.get(6));
+        if (items.get(6) != 0) {
+            setItemimage(img7, items.get(6));
+        }
     }
 
     private void setItemimage(ImageView img, int i) {
         if (i == 0) {return;}
         String imgName = helper.getItemImgFromId(i);
         String url = requestManager.getItemImageURL(imgName);
-        if (url == Constants.UNKNOWN_IMAGE) {img.setImageResource(R.drawable.unknown);}
+        if (url == Constants.UNKNOWN_IMAGE) {}
         setImg(img, url);
     }
 

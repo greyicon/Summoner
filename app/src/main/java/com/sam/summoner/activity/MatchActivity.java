@@ -263,25 +263,39 @@ public class MatchActivity extends AppCompatActivity {
     private void setPlayerItems(List<Integer> items, View view) {
         RelativeLayout relativeLayout = (RelativeLayout) view.findViewById(R.id.playerItemLayout);
         ImageView img1 = (ImageView) relativeLayout.findViewById(R.id.playerItem1);
-        setItem(items.get(0), img1);
+        if (items.get(0) != 0) {
+            setItem(items.get(0), img1);
+        }
         ImageView img2 = (ImageView) relativeLayout.findViewById(R.id.playerItem2);
-        setItem(items.get(1), img2);
+        if (items.get(1) != 0) {
+            setItem(items.get(1), img2);
+        }
         ImageView img3 = (ImageView) relativeLayout.findViewById(R.id.playerItem3);
-        setItem(items.get(2), img3);
+        if (items.get(2) != 0) {
+            setItem(items.get(2), img3);
+        }
         ImageView img4 = (ImageView) relativeLayout.findViewById(R.id.playerItem4);
-        setItem(items.get(3), img4);
+        if (items.get(3) != 0) {
+            setItem(items.get(3), img4);
+        }
         ImageView img5 = (ImageView) relativeLayout.findViewById(R.id.playerItem5);
-        setItem(items.get(4), img5);
+        if (items.get(4) != 0) {
+            setItem(items.get(4), img5);
+        }
         ImageView img6 = (ImageView) relativeLayout.findViewById(R.id.playerItem6);
-        setItem(items.get(5), img6);
+        if (items.get(5) != 0) {
+            setItem(items.get(5), img6);
+        }
         ImageView img7 = (ImageView) relativeLayout.findViewById(R.id.playerItem7);
-        setItem(items.get(6), img7);
+        if (items.get(6) != 0) {
+            setItem(items.get(6), img7);
+        }
     }
 
     private void setItem(int i, ImageView view) {
         if (i == 0) {return;}
         String url = requestManager.getItemImageURL(helper.getItemImgFromId(i));
-        if (url == Constants.UNKNOWN_IMAGE) {view.setImageResource(R.drawable.unknown);}
+        if (url == Constants.UNKNOWN_IMAGE) {}
         setImg(url, view);
     }
 

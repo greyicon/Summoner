@@ -34,13 +34,30 @@ public class ParticipantDto {
 
     public ArrayList<Integer> getItems() {
         ArrayList<Integer> ret = new ArrayList<Integer>();
-        ret.add(this.stats.item1);
-        ret.add(this.stats.item2);
-        ret.add(this.stats.item3);
-        ret.add(this.stats.item4);
-        ret.add(this.stats.item5);
-        ret.add(this.stats.item6);
-        ret.add(this.stats.item7);
+        if (this.stats.item1 != 0) {
+            ret.add(this.stats.item1);
+        }
+        if (this.stats.item2 != 0) {
+            ret.add(this.stats.item2);
+        }
+        if (this.stats.item3 != 0) {
+            ret.add(this.stats.item3);
+        }
+        if (this.stats.item4 != 0) {
+            ret.add(this.stats.item4);
+        }
+        if (this.stats.item5 != 0) {
+            ret.add(this.stats.item5);
+        }
+        if (this.stats.item6 != 0) {
+            ret.add(this.stats.item6);
+        }
+        if (this.stats.item7 != 0) {
+            ret.add(this.stats.item7);
+        }
+        while (ret.size() < 7) {
+            ret.add(0);
+        }
         return ret;
     }
 }
