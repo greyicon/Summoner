@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/background3"
+    android:layout_marginTop="10dp"
+    android:padding="10dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="-1">
+
+        <ImageView
+            android:id="@+id/rankLogo"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+
+        <TextView
+            android:id="@+id/rankLabel"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/rankLogo"
+            android:layout_below="@id/rankLogo"
+            android:layout_marginTop="3dp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="@color/colorText"
+            android:text="Ranked Solo"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/background1"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/rankTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorText"
+            android:textStyle="bold"
+            android:text="PLATINUM IV - Nunu's Smashers"/>
+
+        <TextView
+            android:id="@+id/rankInfoPar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/rankTitle"
+            android:textColor="@color/colorText"
+            android:text="Wins: 100 | Losses: 100 | LP: 100"/>
+
+        <TextView
+            android:id="@+id/rankWinrate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/rankInfoPar"
+            android:textColor="@color/colorText"
+            android:text="Overall Winrate: 100%"/>
+
+        <Button
+            android:id="@+id/queueHistoryBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/rankWinrate"
+            android:layout_centerInParent="true"
+            android:text="View queue history"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

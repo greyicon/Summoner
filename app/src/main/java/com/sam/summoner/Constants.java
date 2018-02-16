@@ -1,8 +1,6 @@
 package com.sam.summoner;
 
 public interface Constants {
-    String API_KEY = "RGAPI-95d25e2b-dac3-42d2-95c0-85ab69a1ba45";
-
     int NORM_DRAFT_ID = 400;
     int RANKED_SOLO_ID = 420;
     int NORM_BLIND_ID = 430;
@@ -12,6 +10,8 @@ public interface Constants {
     int RANKED_3S_ID = 470;
 
     int MATCH_HISTORY_LENGTH = 10;
+
+    String EMPTY_ITEM_URL = "https://vectr.com/greyicon/g1FbTwdUw.svg";
 
     // Database and Table Names
     String STATIC_DB_NAME = "static_data.db";
@@ -37,7 +37,7 @@ public interface Constants {
         - Overall match history on main info page (InfoActivity)
         - Match history expansion (MatchHistoryActivity, InfoActivity)
         - Make a sweet logo for home page (MainActivity)
-        - Summoner icon stuff
+        - AccountInfo icon stuff
             - Have summoner icon beside summoner name in info page
             - Database for summoner icons
         - Favorites list

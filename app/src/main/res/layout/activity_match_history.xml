@@ -34,7 +34,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/mhMatchList"
-                android:layout_below="@+id/mhTitle">
+                android:layout_below="@+id/mhTitle"
+                android:clipChildren="false">
 
                 <!-- MATCHES ARE DYNAMICALLY ADDED IN MatchHistoryActivity -->
 
