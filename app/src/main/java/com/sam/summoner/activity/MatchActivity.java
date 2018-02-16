@@ -293,7 +293,10 @@ public class MatchActivity extends AppCompatActivity {
     }
 
     private void setItem(int i, ImageView view) {
-        if (i == 0) {return;}
+        if (i == 0) {
+            setImg(Constants.EMPTY_ITEM_URL, view);
+            return;
+        }
         String url = requestManager.getItemImageURL(helper.getItemImgFromId(i));
         if (url == Constants.UNKNOWN_IMAGE) {}
         setImg(url, view);

@@ -11,6 +11,8 @@ public interface Constants {
 
     int MATCH_HISTORY_LENGTH = 10;
 
+    String EMPTY_ITEM_URL = "https://vectr.com/greyicon/g1FbTwdUw.svg";
+
     // Database and Table Names
     String STATIC_DB_NAME = "static_data.db";
     String CHAMP_TABLE_NAME = "champion_table";

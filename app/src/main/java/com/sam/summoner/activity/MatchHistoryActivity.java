@@ -153,7 +153,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
         int secs = (int) gameDuration % 60;
 
         String ret = "Gold: " + gold + " | CS: " + cs + " | KDA: " + kills + "/"
-                + deaths + "/" + assists + " | Gametime: " + mins + ":" + secs;
+                + deaths + "/" + assists + "\n Gametime: " + mins + ":" + secs;
         textStats.setText(ret);
     }
 
@@ -201,7 +201,10 @@ public class MatchHistoryActivity extends AppCompatActivity {
     }
 
     private void setItemimage(ImageView img, int i) {
-        if (i == 0) {return;}
+        if (i == 0) {
+            img.setImageResource(R.drawable.empty_item);
+            return;
+        }
         String imgName = helper.getItemImgFromId(i);
         String url = requestManager.getItemImageURL(imgName);
         if (url == Constants.UNKNOWN_IMAGE) {}

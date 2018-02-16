@@ -173,13 +173,13 @@ public class InfoActivity extends AppCompatActivity {
     private void setRankLabel(TextView rankLabel, int queueId) {
         switch (queueId) {
             case Constants.RANKED_SOLO_ID:
-                rankLabel.setText("Solo");
+                rankLabel.setText("Ranked Solo");
                 break;
             case Constants.RANKED_FLEX_ID:
-                rankLabel.setText("Flex");
+                rankLabel.setText("Ranked Flex");
                 break;
             case Constants.RANKED_3S_ID:
-                rankLabel.setText("Treeline");
+                rankLabel.setText("Ranked Treeline");
                 break;
         }
     }

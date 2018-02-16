@@ -65,14 +65,14 @@
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:background="@drawable/background2"
+            android:background="@drawable/empty_item"
             android:id="@+id/matchItem1"/>
 
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:id="@+id/matchItem2"
-            android:background="@drawable/background2"
+            android:background="@drawable/empty_item"
             android:layout_toRightOf="@+id/matchItem1"
             android:layout_marginLeft="1dp"/>
 
@@ -81,14 +81,14 @@
             android:layout_height="32dp"
             android:id="@+id/matchItem3"
             android:layout_toRightOf="@+id/matchItem2"
-            android:background="@drawable/background2"
+            android:background="@drawable/empty_item"
             android:layout_marginLeft="1dp"/>
 
         <ImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:id="@+id/matchItem4"
-            android:background="@drawable/background2"
+            android:background="@drawable/empty_item"
             android:layout_toRightOf="@+id/matchItem3"
             android:layout_marginLeft="1dp"/>
 
@@ -97,7 +97,7 @@
             android:layout_height="32dp"
             android:id="@+id/matchItem5"
             android:layout_toRightOf="@+id/matchItem4"
-            android:background="@drawable/background2"
+            android:background="@drawable/empty_item"
             android:layout_marginLeft="1dp"/>
 
         <ImageView
@@ -105,7 +105,7 @@
             android:layout_height="32dp"
             android:id="@+id/matchItem6"
             android:layout_toRightOf="@+id/matchItem5"
-            android:background="@drawable/background2"
+            android:background="@drawable/empty_item"
             android:layout_marginLeft="1dp"/>
 
         <ImageView
@@ -113,7 +113,7 @@
             android:layout_height="32dp"
             android:id="@+id/matchItem7"
             android:layout_toRightOf="@+id/matchItem6"
-            android:background="@drawable/background2"
+            android:background="@drawable/empty_item"
             android:layout_marginLeft="1dp"/>
     </RelativeLayout>
 
@@ -144,8 +144,9 @@
         android:layout_marginRight="6dp"
         android:layout_marginTop="2dp"
         android:textColor="@color/colorText"
-        android:textSize="7dp"
-        android:text="Gold: 00000 | CS: 000 | KDA: 00/00/00 | Gametime: 00:00"/>
+        android:gravity="right"
+        android:textSize="10dp"
+        android:text="Gold: 00000 | CS: 000 | KDA: 00/00/00&#xA; Gametime: 00:00"/>
 
     <TextView
         android:layout_width="wrap_content"
