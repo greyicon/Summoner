@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -57,34 +58,51 @@
             android:layout_height="wrap_content">
 
             <!-- SUMMONER NAME VIEW -->
-            <TextView
-                android:id="@+id/nameView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="30dp"
-                android:textColor="@color/colorText"
-                android:textStyle="bold"
-                android:layout_marginTop="10dp"
-                android:layout_centerHorizontal="true"
-                android:text="GreyIcon" />
+            <RelativeLayout
+                android:id="@+id/nameplate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <!-- SUMMONER LEVEL VIEW -->
-            <TextView
-                android:id="@+id/levelView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorText"
-                android:textStyle="italic"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/nameView"
-                android:text="Level 30" />
+                <TextView
+                    android:id="@+id/nameView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="30dp"
+                    android:textColor="@color/colorText"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="50dp"
+                    android:text="GreyIcon" />
+
+                <!-- SUMMONER LEVEL VIEW -->
+                <TextView
+                    android:id="@+id/levelView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorText"
+                    android:textStyle="italic"
+                    android:layout_marginLeft="70dp"
+                    android:layout_below="@+id/nameView"
+                    android:text="Level 30" />
+
+                <Button
+                    android:id="@+id/addFavBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@id/nameView"
+                    android:textSize="12dp"
+                    android:layout_marginRight="20dp"
+                    android:text="Add favorite"/>
+
+            </RelativeLayout>
 
             <!-- RANKED QUEUE INFORMATION -->
             <LinearLayout
                 android:id="@+id/rankQueueLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/levelView"
+                android:layout_below="@id/nameplate"
                 android:orientation="vertical">
 
                 <!-- Inflated dynamically -->

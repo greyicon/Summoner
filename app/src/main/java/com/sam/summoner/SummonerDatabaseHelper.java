@@ -20,7 +20,7 @@ public class SummonerDatabaseHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         String query = "create table " + FRIENDS_TABLE_NAME + " (" +
-                FRIENDS_COL1 + " integer primary key, " +
+                FRIENDS_COL1 + " text" +
                 ")";
         db.execSQL(query);
     }
@@ -35,6 +35,12 @@ public class SummonerDatabaseHelper extends SQLiteOpenHelper{
         ContentValues cv = new ContentValues();
         cv.put(FRIENDS_COL1, name);
         db.insert(FRIENDS_TABLE_NAME, null, cv);
+    }
+
+    public void removeFriend(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "delete from " + FRIENDS_TABLE_NAME + " where " + FRIENDS_COL1 + " = " + name;
+        db.execSQL(query);
     }
 
     public ArrayList<String> getFriends() {

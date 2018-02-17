@@ -1,6 +1,6 @@
 package com.sam.summoner.match;
 
-class PlayerDto {
+public class PlayerDto {
     //public String currentPlatformId;
     public String summonerName;
     //public String matchHistoryUri;
