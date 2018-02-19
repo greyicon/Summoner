@@ -18,8 +18,6 @@ public interface Constants {
     String CHAMP_TABLE_NAME = "champion_table";
     String ITEM_TABLE_NAME = "item_table";
     String SS_TABLE_NAME = "summspell_table";
-
-    String SUMMONER_DB_NAME = "summoner_data.db";
     String FRIENDS_TABLE_NAME = "friends_table";
 
     String UNKNOWN_IMAGE = "UNKNOWN";

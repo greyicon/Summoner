@@ -16,15 +16,15 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.sam.summoner.Constants;
+import com.sam.summoner.FavoriteList;
 import com.sam.summoner.R;
 import com.sam.summoner.RequestManager;
-import com.sam.summoner.SummonerDatabaseHelper;
+import com.sam.summoner.StaticsDatabaseHelper;
 import com.sam.summoner.account.AccountDto;
 import com.sam.summoner.account.LeaguePositionDto;
 import com.sam.summoner.account.SummonerDto;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class InfoActivity extends AppCompatActivity {
     private final String TAG = "InfoActivity";
@@ -32,7 +32,7 @@ public class InfoActivity extends AppCompatActivity {
     private AccountDto accountDto;
 
     private RequestManager requestManager;
-    private SummonerDatabaseHelper summonerDatabaseHelper;
+    private StaticsDatabaseHelper helper;
     private Gson gson;
 
     private TextView searchTxt;
@@ -48,7 +48,7 @@ public class InfoActivity extends AppCompatActivity {
         String jString = getIntent().getStringExtra("jString");
 
         requestManager = RequestManager.getInstance();
-        summonerDatabaseHelper = new SummonerDatabaseHelper(this);
+        helper = new StaticsDatabaseHelper(this);
         gson = new Gson();
 
         getAccountInformation(jString);
@@ -68,6 +68,8 @@ public class InfoActivity extends AppCompatActivity {
 
         updateNameView();
         updateRankedInformation();
+
+        setButtonText();
     }
 
     private void getAccountInformation(String jString) {
@@ -251,6 +253,7 @@ public class InfoActivity extends AppCompatActivity {
             getAccountInformation(jString);
             updateNameView();
             updateRankedInformation();
+            setButtonText();
         } else {
             Log.e(TAG, "Failed to find summoner: jString is null.");
             Toast.makeText(this, "Failed to find summoner.", Toast.LENGTH_SHORT).show();
@@ -270,29 +273,28 @@ public class InfoActivity extends AppCompatActivity {
 
     private void setButtonText() {
         String name = accountDto.summonerDto.name;
-        if (isFavorite(name)) {
+        ArrayList<String> favoriteList = helper.getFriends();
+        if (favoriteList.contains(name)) {
             addFavbtn.setText("Remove favorite");
         } else {
             addFavbtn.setText("Add favorite");
         }
     }
 
-    private boolean isFavorite(String name) {
-        ArrayList<String> favs = summonerDatabaseHelper.getFriends();
-        return favs.contains(name);
-    }
-
     private void toggleFavorite() {
         String name = accountDto.summonerDto.name;
-        if (isFavorite(name)) {
-            summonerDatabaseHelper.removeFriend(name);
+        ArrayList<String> favoriteList = helper.getFriends();
+        if (favoriteList.contains(name)) {
+            helper.removeFriend(name);
             Toast.makeText(this, "Favorite removed", Toast.LENGTH_SHORT).show();
         } else {
-            summonerDatabaseHelper.addFriend(name);
+            helper.addFriend(name);
             Toast.makeText(this, "Favorite added", Toast.LENGTH_SHORT).show();
         }
         setButtonText();
     }
+
+
 
     private void viewMatchHistory(int queue) {
         Log.d(TAG, "Starting match history load for queue: " + queue);
