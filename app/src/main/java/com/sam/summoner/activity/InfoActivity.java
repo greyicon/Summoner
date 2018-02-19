@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.sam.summoner.Constants;
-import com.sam.summoner.FavoriteList;
 import com.sam.summoner.R;
 import com.sam.summoner.RequestManager;
 import com.sam.summoner.StaticsDatabaseHelper;
