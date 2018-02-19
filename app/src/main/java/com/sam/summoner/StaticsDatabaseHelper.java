@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 public class StaticsDatabaseHelper extends SQLiteOpenHelper {
     private final String TAG = "StaticsDatabaseHelper";
 
@@ -23,6 +25,8 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
     public static final String SS_COL1 = "id";
     public static final String SS_COL2 = "name";
     public static final String SS_COL3 = "image";
+    public static final String FL_TABLE_NAME  = Constants.FRIENDS_TABLE_NAME;
+    public static final String FL_COL1 = "name";
 
     public StaticsDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -56,6 +60,14 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
                 ")";
         db.execSQL(query);
         Log.d(TAG, "Summoner spell database table created.");
+
+        Log.d(TAG, "Creating friend database table...");
+        query = "create table " + FL_TABLE_NAME + " (" +
+                "id integer primary key autoincrement, " +
+                FL_COL1 + " text" +
+                ")";
+        db.execSQL(query);
+        Log.d(TAG, "Friend database table created.");
     }
 
     @Override
@@ -187,5 +199,30 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
         cur.moveToFirst();
         int count = cur.getInt(0);
         return count;
+    }
+
+    public void addFriend(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(FL_COL1, name);
+        db.insert(FL_TABLE_NAME, null, cv);
+    }
+
+    public void removeFriend(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "delete from " + FL_TABLE_NAME + " where " + FL_COL1 + " = '" + name + "'";
+        db.execSQL(query);
+    }
+
+    public ArrayList<String> getFriends() {
+        ArrayList<String> friends = new ArrayList<String>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cur = db.rawQuery("select " + FL_COL1 + " from " + FL_TABLE_NAME, null);
+        cur.moveToFirst();
+        while (!cur.isAfterLast()) {
+            friends.add(cur.getString(0));
+            cur.moveToNext();
+        }
+        return friends;
     }
 }

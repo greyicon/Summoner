@@ -1,7 +1,6 @@
 package com.sam.summoner.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +11,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,9 +18,12 @@ import com.google.gson.Gson;
 import com.sam.summoner.Constants;
 import com.sam.summoner.R;
 import com.sam.summoner.RequestManager;
+import com.sam.summoner.StaticsDatabaseHelper;
 import com.sam.summoner.account.AccountDto;
 import com.sam.summoner.account.LeaguePositionDto;
 import com.sam.summoner.account.SummonerDto;
+
+import java.util.ArrayList;
 
 public class InfoActivity extends AppCompatActivity {
     private final String TAG = "InfoActivity";
@@ -30,10 +31,11 @@ public class InfoActivity extends AppCompatActivity {
     private AccountDto accountDto;
 
     private RequestManager requestManager;
+    private StaticsDatabaseHelper helper;
     private Gson gson;
 
     private TextView searchTxt;
-    private Button searchBtn;
+    private Button addFavbtn;
     private TextView nameView;
     private TextView levelView;
 
@@ -45,6 +47,7 @@ public class InfoActivity extends AppCompatActivity {
         String jString = getIntent().getStringExtra("jString");
 
         requestManager = RequestManager.getInstance();
+        helper = new StaticsDatabaseHelper(this);
         gson = new Gson();
 
         getAccountInformation(jString);
@@ -52,16 +55,20 @@ public class InfoActivity extends AppCompatActivity {
         nameView = (TextView) findViewById(R.id.nameView);
         levelView = (TextView) findViewById(R.id.levelView);
         searchTxt = (TextView) findViewById(R.id.searchTxt);
-        searchBtn = (Button) findViewById(R.id.searchBtn);
+        Button searchBtn = (Button) findViewById(R.id.searchBtn);
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 search();
             }
         });
+        addFavbtn = (Button) findViewById(R.id.addFavBtn);
+        configureFavoriteBtn();
 
         updateNameView();
         updateRankedInformation();
+
+        setButtonText();
     }
 
     private void getAccountInformation(String jString) {
@@ -74,17 +81,17 @@ public class InfoActivity extends AppCompatActivity {
     private void applyAccountInformation(SummonerDto summonerDto, LeaguePositionDto[] positionDtos) {
         accountDto = new AccountDto();
         accountDto.summonerDto = summonerDto;
-        for (int i = 0; i < positionDtos.length; i++) {
-            String queueType = positionDtos[i].queueType;
+        for (LeaguePositionDto positionDto : positionDtos) {
+            String queueType = positionDto.queueType;
             switch (queueType) {
                 case "RANKED_SOLO_5x5":
-                    accountDto.rankedSolo = positionDtos[i];
+                    accountDto.rankedSolo = positionDto;
                     break;
                 case "RANKED_FLEX_SR":
-                    accountDto.rankedFlex = positionDtos[i];
+                    accountDto.rankedFlex = positionDto;
                     break;
                 case "RANKED_FLEX_TT":
-                    accountDto.rankedTree = positionDtos[i];
+                    accountDto.rankedTree = positionDto;
                     break;
             }
         }
@@ -138,8 +145,7 @@ public class InfoActivity extends AppCompatActivity {
         rankHistoryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int id = queueId;
-                viewMatchHistory(id);
+                viewMatchHistory(queueId);
             }
         });
 
@@ -237,7 +243,7 @@ public class InfoActivity extends AppCompatActivity {
     private void search() {
         Log.d(TAG, "Searching for a new summoner...");
         String summonerName = searchTxt.getText().toString();
-        if (summonerName == "") {
+        if (summonerName.equals("")) {
             Log.d(TAG, "Search bar is empty.");
             return;
         }
@@ -246,12 +252,48 @@ public class InfoActivity extends AppCompatActivity {
             getAccountInformation(jString);
             updateNameView();
             updateRankedInformation();
+            setButtonText();
         } else {
             Log.e(TAG, "Failed to find summoner: jString is null.");
             Toast.makeText(this, "Failed to find summoner.", Toast.LENGTH_SHORT).show();
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
+
+    private void configureFavoriteBtn() {
+        setButtonText();
+        addFavbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleFavorite();
+            }
+        });
+    }
+
+    private void setButtonText() {
+        String name = accountDto.summonerDto.name;
+        ArrayList<String> favoriteList = helper.getFriends();
+        if (favoriteList.contains(name)) {
+            addFavbtn.setText("Remove favorite");
+        } else {
+            addFavbtn.setText("Add favorite");
+        }
+    }
+
+    private void toggleFavorite() {
+        String name = accountDto.summonerDto.name;
+        ArrayList<String> favoriteList = helper.getFriends();
+        if (favoriteList.contains(name)) {
+            helper.removeFriend(name);
+            Toast.makeText(this, "Favorite removed", Toast.LENGTH_SHORT).show();
+        } else {
+            helper.addFriend(name);
+            Toast.makeText(this, "Favorite added", Toast.LENGTH_SHORT).show();
+        }
+        setButtonText();
+    }
+
+
 
     private void viewMatchHistory(int queue) {
         Log.d(TAG, "Starting match history load for queue: " + queue);

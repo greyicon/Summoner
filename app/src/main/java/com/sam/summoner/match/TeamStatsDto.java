@@ -2,7 +2,7 @@ package com.sam.summoner.match;
 
 import java.util.ArrayList;
 
-class TeamStatsDto {
+public class TeamStatsDto {
     //public boolean firstDragon;
     //public boolean firstInhibitor;
     //public ArrayList<TeamBansDto> bans;
