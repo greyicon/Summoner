@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.sam.summoner.Constants;
 import com.sam.summoner.R;
@@ -104,6 +105,13 @@ public class InfoActivity extends AppCompatActivity {
         long lvl = accountDto.summonerDto.summonerLevel;
         nameView.setText(name);
         levelView.setText("Level " + lvl);
+        setSummonerIcon();
+    }
+
+    private void setSummonerIcon() {
+        ImageView img = (ImageView) findViewById(R.id.summonerIcon);
+        String url = requestManager.getSummonerIconImageURL(accountDto.summonerDto.profileIconId);
+        Glide.with(this).load(url).into(img);
     }
 
     // set text for summoner ranked queue information

@@ -5,4 +5,8 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="colorText">#000000</color>
+
+    <color name="colorPhysical">#ffab91</color>
+    <color name="colorMagic">#ce93d8</color>
+    <color name="colorTrue">#b3e5fc</color>
 </resources>

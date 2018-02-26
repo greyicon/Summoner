@@ -60,8 +60,15 @@
             <!-- SUMMONER NAME VIEW -->
             <RelativeLayout
                 android:id="@+id/nameplate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
+
+                <ImageView
+                    android:id="@+id/summonerIcon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"/>
 
                 <TextView
                     android:id="@+id/nameView"
@@ -70,8 +77,9 @@
                     android:textSize="30dp"
                     android:textColor="@color/colorText"
                     android:textStyle="bold"
+                    android:layout_toRightOf="@id/summonerIcon"
                     android:layout_marginTop="10dp"
-                    android:layout_marginLeft="50dp"
+                    android:layout_marginLeft="5dp"
                     android:text="GreyIcon" />
 
                 <!-- SUMMONER LEVEL VIEW -->
@@ -81,28 +89,30 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorText"
                     android:textStyle="italic"
-                    android:layout_marginLeft="70dp"
+                    android:layout_toRightOf="@id/summonerIcon"
+                    android:layout_marginLeft="30dp"
                     android:layout_below="@+id/nameView"
                     android:text="Level 30" />
 
-                <Button
-                    android:id="@+id/addFavBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignTop="@id/nameView"
-                    android:textSize="12dp"
-                    android:layout_marginRight="20dp"
-                    android:text="Add favorite"/>
-
             </RelativeLayout>
+
+            <Button
+                android:id="@+id/addFavBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/nameplate"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:textSize="12dp"
+                android:layout_centerHorizontal="true"
+                android:text="Add favorite"/>
 
             <!-- RANKED QUEUE INFORMATION -->
             <LinearLayout
                 android:id="@+id/rankQueueLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/nameplate"
+                android:layout_below="@id/addFavBtn"
                 android:orientation="vertical">
 
                 <!-- Inflated dynamically -->

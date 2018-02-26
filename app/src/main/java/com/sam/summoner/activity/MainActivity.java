@@ -11,10 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sam.summoner.GameStaticsManager;
@@ -74,6 +72,14 @@ public class MainActivity extends AppCompatActivity {
                 viewFavList();
             }
         });
+
+        Button test = (Button) findViewById(R.id.test);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                test();
+            }
+        });
     }
 
     // search for the summoner name in summonerText
@@ -82,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     private void search() {
         Log.d(TAG, "Starting summoner search...");
         String summonerName = summonerText.getText().toString();
-        if (summonerName == "") {return;}
+        if (summonerName.equals("")) {return;}
         String jString = requestManager.getAccountJObject(summonerName);
         if (jString != null) {
             Log.d(TAG, "Got summoner info. Launching InfoActivity...");
@@ -100,16 +106,15 @@ public class MainActivity extends AppCompatActivity {
     // if summonerText is not empty, search for summoner data
     private void search(String name) {
         Log.d(TAG, "Starting summoner search...");
-        String summonerName = name;
-        if (summonerName == "") {return;}
-        String jString = requestManager.getAccountJObject(summonerName);
+        if (name.equals("")) {return;}
+        String jString = requestManager.getAccountJObject(name);
         if (jString != null) {
             Log.d(TAG, "Got summoner info. Launching InfoActivity...");
             Intent i = new Intent(this, InfoActivity.class);
             i.putExtra("jString", jString);
             startActivity(i);
         } else {
-            Log.e(TAG, "Failed to find summoner: " + summonerName);
+            Log.e(TAG, "Failed to find summoner: " + name);
             Toast.makeText(this, "Failed to find summoner.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -170,5 +175,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         builder.show();
+    }
+
+    private void test() {
+        Intent i = new Intent(this, MatchStatsActivity.class);
+        startActivity(i);
     }
 }

@@ -87,7 +87,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
                     populateMatch(infl, par, m, ii);
                 }
             });
-            t.setPriority(Thread.NORM_PRIORITY - 1);
+            t.setPriority(Thread.NORM_PRIORITY + 1);
             t.run();
         }
     }

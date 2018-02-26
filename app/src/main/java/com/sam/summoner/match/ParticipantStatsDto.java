@@ -4,13 +4,13 @@ public class ParticipantStatsDto {
     public int champLevel;
     public boolean win;
     //items
+    public int item0;
     public int item1;
     public int item2;
     public int item3;
     public int item4;
     public int item5;
     public int item6;
-    public int item7;
     //kda
     public int kills;
     public int deaths;
@@ -18,8 +18,6 @@ public class ParticipantStatsDto {
     //gold
     public int goldEarned;
     public int totalMinionsKilled;
-
-    /*
     //total dmg
     public long totalDamageDealt;
     public long physicalDamageDealt;
@@ -43,9 +41,11 @@ public class ParticipantStatsDto {
     public int unrealKills;
     public int killingSprees;
     //vision
+    public long visionScore;
     public int visionWardsBoughtInGame;
     public int wardsKilled;
     public int sightWardsBoughtInGame;
+    /*
     //other
     public int neutralMinionsKilledTeamJungle;
     public int totalPlayerScore;

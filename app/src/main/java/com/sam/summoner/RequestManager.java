@@ -104,6 +104,12 @@ public class RequestManager {
         return ret;
     }
 
+    public String getSummonerIconImageURL(int imgName) {
+        Log.d(TAG, "Handling request: getIconImage: " + imgName + "...");
+        String ret = "http://ddragon.leagueoflegends.com/cdn/" + ddVersion + "/img/profileicon/" + imgName + ".png";
+        return ret;
+    }
+
     public void updateDdVersion() {
         Log.d(TAG, "Loading latest ddragon version code...");
         String ret = null;

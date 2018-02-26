@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sam.summoner.activity.MatchStatsActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <RadioGroup
+                android:id="@+id/chartSelector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
+
+                <RadioButton
+                    android:id="@+id/radDmgDealt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Damage Dealt"/>
+
+                <RadioButton
+                    android:id="@+id/radDmgTaken"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Damage Taken"/>
+
+                <RadioButton
+                    android:id="@+id/radVisionScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Vision"/>
+
+            </RadioGroup>
+
+            <RelativeLayout
+                android:id="@+id/champIconLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:layout_marginTop="24dp"
+                android:layout_below="@id/chartSelector">
+
+                <ImageView
+                    android:id="@+id/champ1"
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/empty_item"/>
+                <ImageView
+                    android:id="@+id/champ2"
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_below="@id/champ1"
+                    android:background="@drawable/empty_item"/>
+                <ImageView
+                    android:id="@+id/champ3"
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_below="@id/champ2"
+                    android:background="@drawable/empty_item"/>
+                <ImageView
+                    android:id="@+id/champ4"
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:layout_marginBottom="11dp"
+                    android:layout_below="@id/champ3"
+                    android:background="@drawable/empty_item"/>
+                <ImageView
+                    android:id="@+id/champ5"
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_below="@id/champ4"
+                    android:background="@drawable/empty_item"/>
+                <ImageView
+                    android:id="@+id/champ6"
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_below="@id/champ5"
+                    android:background="@drawable/empty_item"/>
+                <ImageView
+                    android:id="@+id/champ7"
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:layout_marginBottom="11dp"
+                    android:layout_below="@id/champ6"
+                    android:background="@drawable/empty_item"/>
+                <ImageView
+                    android:id="@+id/champ8"
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_below="@id/champ7"
+                    android:background="@drawable/empty_item"/>
+                <ImageView
+                    android:id="@+id/champ9"
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:layout_marginBottom="11dp"
+                    android:layout_below="@id/champ8"
+                    android:background="@drawable/empty_item"/>
+                <ImageView
+                    android:id="@+id/champ10"
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_below="@id/champ9"
+                    android:background="@drawable/empty_item"/>
+
+            </RelativeLayout>
+
+            <com.github.mikephil.charting.charts.HorizontalBarChart
+                android:id="@+id/chartDamage"
+                android:layout_width="350dp"
+                android:layout_height="465dp"
+                android:layout_toRightOf="@id/champIconLayout"
+                android:layout_below="@id/chartSelector"
+                android:layout_marginLeft="-20dp">
+            </com.github.mikephil.charting.charts.HorizontalBarChart>
+
+            <com.github.mikephil.charting.charts.HorizontalBarChart
+                android:id="@+id/chartTank"
+                android:layout_width="350dp"
+                android:layout_height="465dp"
+                android:layout_toRightOf="@id/champIconLayout"
+                android:layout_below="@id/chartSelector"
+                android:layout_marginLeft="-20dp"
+                android:visibility="gone">
+            </com.github.mikephil.charting.charts.HorizontalBarChart>
+
+            <com.github.mikephil.charting.charts.HorizontalBarChart
+                android:id="@+id/chartVision"
+                android:layout_width="350dp"
+                android:layout_height="465dp"
+                android:layout_toRightOf="@id/champIconLayout"
+                android:layout_below="@id/chartSelector"
+                android:visibility="gone">
+            </com.github.mikephil.charting.charts.HorizontalBarChart>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

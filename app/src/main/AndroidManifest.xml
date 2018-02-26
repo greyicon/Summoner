@@ -22,7 +22,8 @@
         </activity>
         <activity android:name=".activity.InfoActivity" />
         <activity android:name=".activity.MatchHistoryActivity" />
-        <activity android:name=".activity.MatchActivity"></activity>
+        <activity android:name=".activity.MatchActivity" />
+        <activity android:name=".activity.MatchStatsActivity"></activity>
     </application>
 
 </manifest>

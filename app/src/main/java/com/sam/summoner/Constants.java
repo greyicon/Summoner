@@ -29,19 +29,18 @@ public interface Constants {
     String ROLE_ADC = "DUO_CARRY";
     String ROLE_SUPPORT = "DUO_SUPPORT";
 
+    // Graphs
+    int CHART_DAMAGE = 0;
+    int CHART_TANK = 1;
+    int CHART_VISION = 2;
+
     /*
         TODOLIST
         - Champ mastery/winrate section (InfoActivity)
-        - Overall match history on main info page (InfoActivity)
         - Match history expansion (MatchHistoryActivity, InfoActivity)
         - Make a sweet logo for home page (MainActivity)
-        - AccountInfo icon stuff
-            - Have summoner icon beside summoner name in info page
-            - Database for summoner icons
-        - Favorites list
         - Runes
         - Tournament code search, send to full match view
-        - On click full match view to expand for extra info
      */
 
 }

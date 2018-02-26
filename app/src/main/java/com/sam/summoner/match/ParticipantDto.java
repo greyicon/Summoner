@@ -1,5 +1,7 @@
 package com.sam.summoner.match;
 
+import com.sam.summoner.Constants;
+
 import java.util.ArrayList;
 
 public class ParticipantDto {
@@ -25,6 +27,10 @@ public class ParticipantDto {
         } else {
             playerRole = lane;
         }
+        if (playerRole.equals("DUO")) {
+            playerRole = Constants.ROLE_ADC;
+        }
+        this.playerRole = playerRole;
         return playerRole;
     }
 
@@ -34,6 +40,9 @@ public class ParticipantDto {
 
     public ArrayList<Integer> getItems() {
         ArrayList<Integer> ret = new ArrayList<Integer>();
+        if (this.stats.item0 != 0) {
+            ret.add(this.stats.item0);
+        }
         if (this.stats.item1 != 0) {
             ret.add(this.stats.item1);
         }
@@ -51,9 +60,6 @@ public class ParticipantDto {
         }
         if (this.stats.item6 != 0) {
             ret.add(this.stats.item6);
-        }
-        if (this.stats.item7 != 0) {
-            ret.add(this.stats.item7);
         }
         while (ret.size() < 7) {
             ret.add(0);
