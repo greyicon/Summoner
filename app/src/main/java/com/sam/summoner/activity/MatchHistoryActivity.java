@@ -1,6 +1,9 @@
 package com.sam.summoner.activity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,9 +29,11 @@ import org.json.JSONObject;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class MatchHistoryActivity extends AppCompatActivity {
     public static final String TAG = "MatchHistoryActivity";
+    private Context mContext = this;
 
     private ArrayList<MatchDto> matches;
     private RequestManager requestManager;
@@ -47,15 +52,40 @@ public class MatchHistoryActivity extends AppCompatActivity {
         matchStrings = new ArrayList<String>();
         matches = new ArrayList<MatchDto>();
 
-        parseMatches(jString);
-        populateHistory();
+        new LoadUI().execute(jString);
     }
+
+    private class LoadUI extends AsyncTask <String, Void, Void> {
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(mContext);
+            dialog.setMessage("Loading match history...");
+            dialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            parseMatches(params[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            populateHistory();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+        }
+    }
+
 
     private void parseMatches(String jString) {
         Log.d(TAG, "Parsing matchlist...");
         try {
             JSONObject object = new JSONObject(jString);
-            JSONArray jArray = object.getJSONArray("matches");
+            final JSONArray jArray = object.getJSONArray("matches");
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject match = jArray.getJSONObject(i);
                 long matchID = match.getLong("gameId");
@@ -76,19 +106,8 @@ public class MatchHistoryActivity extends AppCompatActivity {
         final LayoutInflater inflater = getLayoutInflater();
         final LinearLayout parent = (LinearLayout) findViewById(R.id.mhMatchList);
         for (int i = 0; i < matches.size(); i++){
-            final MatchDto matchDto = matches.get(i);
-            final int ii = i;
-            Thread t = new Thread(new Runnable() {
-                LayoutInflater infl = inflater;
-                LinearLayout par = parent;
-                MatchDto m = matchDto;
-                @Override
-                public void run() {
-                    populateMatch(infl, par, m, ii);
-                }
-            });
-            t.setPriority(Thread.NORM_PRIORITY + 1);
-            t.run();
+            MatchDto matchDto = matches.get(i);
+            populateMatch(inflater, parent, matchDto, i);
         }
     }
 

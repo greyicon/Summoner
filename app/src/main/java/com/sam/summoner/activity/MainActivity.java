@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void test() {
-        Intent i = new Intent(this, MatchStatsActivity.class);
-        startActivity(i);
+        Toast.makeText(this, "Cores: " + Runtime.getRuntime().availableProcessors(), Toast.LENGTH_SHORT).show();
     }
 }
