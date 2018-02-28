@@ -23,7 +23,7 @@ public class RequestManager {
     private String API_KEY;
     private final String TAG = "RequestManager";
     // ddragon version default, is updated on application launch
-    private String ddVersion = "7.24.2";
+    private String ddVersion = Constants.DEFAULT_DD_VERSION;
 
     private RequestManager() {}
 
@@ -114,7 +114,7 @@ public class RequestManager {
         return ret;
     }
 
-    public void updateDdVersion() {
+    public String updateDdVersion() {
         Log.d(TAG, "Loading latest ddragon version code...");
         String ret = null;
         String jString = getDdragonVersion();
@@ -128,6 +128,7 @@ public class RequestManager {
             }
         }
         ddVersion = ret;
+        return ret;
     }
 
     public void setApiKey(String key) {

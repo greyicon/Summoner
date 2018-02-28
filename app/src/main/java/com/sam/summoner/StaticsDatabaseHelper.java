@@ -201,6 +201,27 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
+    public void clearChampTable() {
+        Log.d(TAG, "Clearing " + CHAMP_TABLE_NAME);
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "delete from " + CHAMP_TABLE_NAME;
+        db.execSQL(query);
+    }
+
+    public void clearItemTable() {
+        Log.d(TAG, "Clearing " + ITEM_TABLE_NAME);
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "delete from " + ITEM_TABLE_NAME;
+        db.execSQL(query);
+    }
+
+    public void clearSpellTable() {
+        Log.d(TAG, "Clearing " + SS_TABLE_NAME);
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "delete from " + SS_TABLE_NAME;
+        db.execSQL(query);
+    }
+
     public void addFriend(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();

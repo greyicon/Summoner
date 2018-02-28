@@ -1,7 +1,10 @@
 package com.sam.summoner.activity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -24,17 +27,17 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
+    private final Context mContext = this;
 
     EditText summonerText;
     Button searchBtn;
 
-    private RequestManager requestManager;
-    private GameStaticsManager championManager;
-    private StaticsDatabaseHelper helper;
+    private RequestManager mRequestManager;
+    private StaticsDatabaseHelper mHelper;
+
     static {
         System.loadLibrary("keys");
     }
-
     public native String getRiotApiKey();
 
     @Override
@@ -42,26 +45,58 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        requestManager = RequestManager.getInstance();
-        requestManager.updateDdVersion();
+        new LoadUI().execute();
+    }
+
+    private class LoadUI extends AsyncTask <Void, Void, Void> {
+        ProgressDialog dialog;
+        private final String TAG_SUFFIX = ".LoadUI";
+
+        @Override
+        protected void onPreExecute() {
+            Log.d(TAG + TAG_SUFFIX, "onPreExecute()");
+            dialog = new ProgressDialog(mContext);
+            dialog.setMessage("Initializing...");
+            dialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Log.d(TAG + TAG_SUFFIX, "doInBackground()");
+            initBackEnd();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Log.d(TAG + TAG_SUFFIX, "onPostExecute()");
+            initFrontEnd();
+            if (dialog.isShowing()) {dialog.dismiss();}
+        }
+    }
+
+    private void initBackEnd() {
+        Log.d(TAG, "initBackEnd()");
+        mHelper = new StaticsDatabaseHelper(this);
+        mRequestManager = RequestManager.getInstance();
+        mRequestManager.updateDdVersion();
 
         String key = new String(Base64.decode(getRiotApiKey(), Base64.DEFAULT));
-        requestManager.setApiKey(key);
+        mRequestManager.setApiKey(key);
 
-        championManager = new GameStaticsManager(this);
-        championManager.init();
+        new GameStaticsManager(mContext).init();
+    }
 
-        helper = new StaticsDatabaseHelper(this);
-
-        // init search bar
+    private void initFrontEnd() {
+        Log.d(TAG, "initFrontEnd()");
         summonerText = (EditText) findViewById(R.id.summonerText);
 
-        // init search button
         searchBtn = (Button) findViewById(R.id.searchBtn);
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                search();
+                String name = summonerText.getText().toString();
+                search(name);
             }
         });
 
@@ -73,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Dev button
         Button test = (Button) findViewById(R.id.test);
         test.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,45 +118,24 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // search for the summoner name in summonerText
-    // if summonerText is empty, do nothing
-    // if summonerText is not empty, search for summoner data
-    private void search() {
-        Log.d(TAG, "Starting summoner search...");
-        String summonerName = summonerText.getText().toString();
-        if (summonerName.equals("")) {return;}
-        String jString = requestManager.getAccountJObject(summonerName);
-        if (jString != null) {
-            Log.d(TAG, "Got summoner info. Launching InfoActivity...");
-            Intent i = new Intent(this, InfoActivity.class);
-            i.putExtra("jString", jString);
-            startActivity(i);
-        } else {
-            Log.e(TAG, "Failed to find summoner: " + summonerName);
-            Toast.makeText(this, "Failed to find summoner.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    // search for the summoner name in summonerText
-    // if summonerText is empty, do nothing
-    // if summonerText is not empty, search for summoner data
     private void search(String name) {
-        Log.d(TAG, "Starting summoner search...");
-        if (name.equals("")) {return;}
-        String jString = requestManager.getAccountJObject(name);
+        Log.d(TAG, "search()");
+        if (name.equals("")) {Toast.makeText(mContext, "Please enter a summoner name.", Toast.LENGTH_SHORT).show();}
+        String jString = mRequestManager.getAccountJObject(name);
         if (jString != null) {
-            Log.d(TAG, "Got summoner info. Launching InfoActivity...");
-            Intent i = new Intent(this, InfoActivity.class);
+            Log.d(TAG, "Search successful. Launching InfoActivity...");
+            Intent i = new Intent(mContext, InfoActivity.class);
             i.putExtra("jString", jString);
             startActivity(i);
         } else {
-            Log.e(TAG, "Failed to find summoner: " + name);
+            Log.e(TAG, "Search failed: " + name);
             Toast.makeText(this, "Failed to find summoner.", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void viewFavList() {
-        ArrayList<String> favs = helper.getFriends();
+        Log.d(TAG, "viewFavList()");
+        ArrayList<String> favs = mHelper.getFriends();
         if (favs.size() == 0) {
             Toast.makeText(this, "Favorites list is empty! Add some by searching for your friends", Toast.LENGTH_SHORT).show();
             return;
@@ -144,39 +159,46 @@ public class MainActivity extends AppCompatActivity {
         builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                Log.d(TAG, "Dialog - dismissed");
                 dialog.dismiss();
             }
         });
+
         builder.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                Log.d(TAG, "Dialog - delete");
                 int id = parent.getCheckedRadioButtonId();
                 if (id == -1) {
                     Toast.makeText(MainActivity.this, "Please make a selection", Toast.LENGTH_SHORT).show();
                     return;
+                } else {
+                    RadioButton selected = (RadioButton) parent.getChildAt(id);
+                    mHelper.removeFriend(selected.getText().toString());
+                    Toast.makeText(MainActivity.this, "Favorite removed.", Toast.LENGTH_SHORT).show();
                 }
-                RadioButton selected = (RadioButton) parent.getChildAt(id);
-                helper.removeFriend((String) selected.getText());
-                Toast.makeText(MainActivity.this, "Favorite removed.", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
             }
         });
+
         builder.setPositiveButton("Search", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                Log.d(TAG, "Dialog - search");
                 int id = parent.getCheckedRadioButtonId();
                 if (id == -1) {
                     Toast.makeText(MainActivity.this, "Please make a selection", Toast.LENGTH_SHORT).show();
-                    return;
+                } else {
+                    RadioButton selected = (RadioButton) parent.getChildAt(id);
+                    dialog.dismiss();
+                    search(selected.getText().toString());
                 }
-                RadioButton selected = (RadioButton) parent.getChildAt(id);
-                dialog.dismiss();
-                search((String) selected.getText());
             }
         });
+
         builder.show();
     }
 
+    // Dev method
     private void test() {
         Toast.makeText(this, "Cores: " + Runtime.getRuntime().availableProcessors(), Toast.LENGTH_SHORT).show();
     }

@@ -20,26 +20,21 @@ public class GameStaticsManager {
     }
 
     public void init() {
+        Log.d(TAG, "init()");
         loadChampionDatabase();
         loadItemDatabase();
         loadSpellDatabase();
     }
 
     private void loadChampionDatabase() {
-        Log.d(TAG, "Checking if champions were already loaded...");
-        int size = helper.getNumChampTableEntries();
-        if (size > 0) {
-            Log.d(TAG, "Champions already loaded, skipping.");
-            return;
-        } else {
-            Log.d(TAG, "Champions not already loaded. Loading " + Constants.CHAMP_TABLE_NAME + "...");
-        }
+        Log.d(TAG, "loadChampionDatabase()");
         String jString = requestManager.getChampions();
         if (jString != null) {
             try {
                 JSONObject object = new JSONObject(jString);
                 JSONObject data = object.getJSONObject("data");
-                for (int i = 0; i < data.names().length(); i++) {
+                int numKeys = data.names().length();
+                for (int i = 0; i < numKeys; i++) {
                     JSONObject champ = data.getJSONObject(data.names().getString(i));
                     String name = champ.getString("name");
                     int id = champ.getInt("key");
@@ -56,14 +51,7 @@ public class GameStaticsManager {
     }
 
     private void loadItemDatabase() {
-        Log.d(TAG, "Checking if items were already loaded...");
-        int size = helper.getNumItemTableEntries();
-        if (size > 0) {
-            Log.d(TAG, "Items already loaded, skipping.");
-            return;
-        } else {
-            Log.d(TAG, "Items not already loaded. Loading " + Constants.ITEM_TABLE_NAME + "...");
-        }
+        Log.d(TAG, "loadItemDatabase()");
         String jString = requestManager.getItems();
         if (jString != null) {
             try {
@@ -88,14 +76,7 @@ public class GameStaticsManager {
     }
 
     private void loadSpellDatabase() {
-        Log.d(TAG, "Checking if spells were already loaded...");
-        int size = helper.getNumSpellTableEntries();
-        if (size > 0) {
-            Log.d(TAG, "Spells already loaded, skipping.");
-            return;
-        } else {
-            Log.d(TAG, "Spells not already loaded. Loading " + Constants.SS_TABLE_NAME + "...");
-        }
+        Log.d(TAG, "loadSpellDatabase()");
         String jString = requestManager.getSummonerSpells();
         if (jString != null) {
             try {
@@ -118,5 +99,4 @@ public class GameStaticsManager {
             Log.e(TAG, "Failed to load spell data: jString is empty.");
         }
     }
-
 }
