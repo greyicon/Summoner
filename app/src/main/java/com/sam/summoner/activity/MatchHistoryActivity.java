@@ -56,15 +56,6 @@ public class MatchHistoryActivity extends AppCompatActivity {
     }
 
     private class LoadUI extends AsyncTask <String, Void, Void> {
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            dialog = new ProgressDialog(mContext);
-            dialog.setMessage("Loading match history...");
-            dialog.show();
-        }
-
         @Override
         protected Void doInBackground(String... params) {
             parseMatches(params[0]);
@@ -74,9 +65,8 @@ public class MatchHistoryActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             populateHistory();
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
+            TextView loadingLabel = (TextView) findViewById(R.id.loadingLabel);
+            loadingLabel.setVisibility(View.GONE);
         }
     }
 
@@ -170,9 +160,15 @@ public class MatchHistoryActivity extends AppCompatActivity {
         double time = l.doubleValue();
         int mins = (int) Math.floor(time/60);
         int secs = (int) gameDuration % 60;
+        String sec = "";
+        if (secs < 10) {
+            sec = "0" + secs;
+        } else {
+            sec = String.valueOf(secs);
+        }
 
         String ret = "Gold: " + gold + " | CS: " + cs + " | KDA: " + kills + "/"
-                + deaths + "/" + assists + "\n Gametime: " + mins + ":" + secs;
+                + deaths + "/" + assists + "\n Gametime: " + mins + ":" + sec;
         textStats.setText(ret);
     }
 

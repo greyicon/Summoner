@@ -23,6 +23,7 @@ import com.sam.summoner.match.MatchDto;
 import com.sam.summoner.match.ParticipantDto;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 public class MatchStatsActivity extends AppCompatActivity {
     private RequestManager requestManager;
@@ -140,7 +141,7 @@ public class MatchStatsActivity extends AppCompatActivity {
     private void configureDataSets() {
         BarDataSet dmgSet = new BarDataSet(valuesDmg, "");
         dmgSet.setStackLabels(new String[] {"Physical", "Magic", "True"});
-        dmgSet.setColors(Color.argb(255, 255, 171, 145), Color.argb(255, 206, 147, 216), Color.argb(255, 225, 245, 254));
+        dmgSet.setColors(Color.argb(255, 255, 171, 145), Color.argb(255, 206, 147, 216), Color.argb(255, 179, 229, 252));
         BarData dmgData = new BarData(dmgSet);
         dmgData.setBarWidth(0.85f);
         dmgData.setHighlightEnabled(false);
@@ -157,7 +158,7 @@ public class MatchStatsActivity extends AppCompatActivity {
         chartTank.setData(tankData);
 
         BarDataSet visSet = new BarDataSet(valuesVision, "Vision Score");
-        visSet.setColor(Color.argb(255, 255, 171, 145));
+        visSet.setColor(Color.argb(255, 147, 233, 171));
         BarData visData = new BarData(visSet);
         visData.setBarWidth(0.85f);
         visData.setHighlightEnabled(false);
