@@ -18,6 +18,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.sam.summoner.Constants;
 import com.sam.summoner.GameStaticsManager;
 import com.sam.summoner.R;
 import com.sam.summoner.RequestManager;
@@ -78,13 +79,26 @@ public class MainActivity extends AppCompatActivity {
     private void initBackEnd() {
         Log.d(TAG, "initBackEnd()");
         mHelper = new StaticsDatabaseHelper(this);
+        if (mHelper.getNumDDTableEntries() == 0) {mHelper.addDDVersion(Constants.DEFAULT_DD_VERSION);}
         mRequestManager = RequestManager.getInstance();
-        mRequestManager.updateDdVersion();
+        String latestDD = mRequestManager.updateDdVersion();
+        String currentDD = mHelper.getDDVersion();
 
         String key = new String(Base64.decode(getRiotApiKey(), Base64.DEFAULT));
         mRequestManager.setApiKey(key);
 
-        new GameStaticsManager(mContext).init();
+        GameStaticsManager gameStaticsManager = new GameStaticsManager(mContext);
+        boolean dataEntered = mHelper.getNumChampTableEntries() != 0;
+        if (!dataEntered){
+            Log.d(TAG, "Initializing static data.");
+            gameStaticsManager.init();
+        } else if (!latestDD.equals(currentDD)) {
+            Log.d(TAG, "Updating static data.");
+            gameStaticsManager.clearStaticsTables();
+            gameStaticsManager.init();
+        } else {
+            Log.d(TAG, "Static data already loaded.");
+        }
     }
 
     private void initFrontEnd() {
