@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void search(String name) {
-        Log.d(TAG, "search()");
+        Log.d(TAG, "search(" + name + ")");
         if (name.equals("")) {Toast.makeText(mContext, "Please enter a summoner name.", Toast.LENGTH_SHORT).show();}
         String jString = mRequestManager.getAccountJObject(name);
         if (jString != null) {
@@ -171,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
                 int id = parent.getCheckedRadioButtonId();
                 if (id == -1) {
                     Toast.makeText(MainActivity.this, "Please make a selection", Toast.LENGTH_SHORT).show();
-                    return;
                 } else {
                     RadioButton selected = (RadioButton) parent.getChildAt(id);
                     mHelper.removeFriend(selected.getText().toString());

@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">findSummoner</string>
 
-    <string name="ranked_solo">RANKED_SOLO_5x5</string>
-    <string name="ranked_flex">RANKED_FLEX_SR</string>
-    <string name="ranked_tree">RANKED_FLEX_TT</string>
+    <!-- InfoActivity -->
+    <string name="fav_remove">Remove favorite</string>
+    <string name="fav_add">Add favorite</string>
+    <string name="rank_null_position">No rank information available</string>
+    <string name="rank_label_solo">Ranked Solo</string>
+    <string name="rank_label_flex">Ranked Flex</string>
+    <string name="rank_label_tree">Ranked Treeline</string>
 </resources>
