@@ -27,7 +27,7 @@ public class ParticipantDto {
         } else {
             playerRole = lane;
         }
-        if (playerRole.equals("DUO")) {
+        if (playerRole.equals("DUO") || playerRole.equals("NONE")) {
             playerRole = Constants.ROLE_ADC;
         }
         this.playerRole = playerRole;

@@ -335,6 +335,7 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     private boolean reloadBackEnd(String name) {
+        Log.d(TAG, "reloadBackEnd()");
         String jString = requestManager.getAccountJObject(name);
         if (jString != null) {
             getAccountInformation(jString);
@@ -347,6 +348,7 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     private void reloadFrontEnd() {
+        Log.d(TAG, "reloadFrontEnd()");
         setNameViewsByAccount();
         inflateQueueViewsByAccount();
         setButtonText();
