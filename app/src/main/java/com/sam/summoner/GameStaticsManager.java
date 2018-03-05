@@ -11,41 +11,36 @@ import java.util.Iterator;
 public class GameStaticsManager {
     private final String TAG = "GameStaticsManager";
 
-    private StaticsDatabaseHelper helper;
-    private RequestManager requestManager;
+    private StaticsDatabaseHelper mHelper;
+    private RequestManager mRequestManager;
 
     public GameStaticsManager(Context context) {
-        helper = new StaticsDatabaseHelper(context);
-        requestManager = RequestManager.getInstance();
+        mHelper = new StaticsDatabaseHelper(context);
+        mRequestManager = RequestManager.getInstance();
     }
 
     public void init() {
+        Log.d(TAG, "init()");
         loadChampionDatabase();
         loadItemDatabase();
         loadSpellDatabase();
     }
 
     private void loadChampionDatabase() {
-        Log.d(TAG, "Checking if champions were already loaded...");
-        int size = helper.getNumChampTableEntries();
-        if (size > 0) {
-            Log.d(TAG, "Champions already loaded, skipping.");
-            return;
-        } else {
-            Log.d(TAG, "Champions not already loaded. Loading " + Constants.CHAMP_TABLE_NAME + "...");
-        }
-        String jString = requestManager.getChampions();
+        Log.d(TAG, "loadChampionDatabase()");
+        String jString = mRequestManager.getChampions();
         if (jString != null) {
             try {
                 JSONObject object = new JSONObject(jString);
                 JSONObject data = object.getJSONObject("data");
-                for (int i = 0; i < data.names().length(); i++) {
+                int numKeys = data.names().length();
+                for (int i = 0; i < numKeys; i++) {
                     JSONObject champ = data.getJSONObject(data.names().getString(i));
                     String name = champ.getString("name");
                     int id = champ.getInt("key");
                     JSONObject image = champ.getJSONObject("image");
                     String img = image.getString("full");
-                    helper.addChampion(id, name, img);
+                    mHelper.addChampion(id, name, img);
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "Failed to parse champion data: " + e);
@@ -56,15 +51,8 @@ public class GameStaticsManager {
     }
 
     private void loadItemDatabase() {
-        Log.d(TAG, "Checking if items were already loaded...");
-        int size = helper.getNumItemTableEntries();
-        if (size > 0) {
-            Log.d(TAG, "Items already loaded, skipping.");
-            return;
-        } else {
-            Log.d(TAG, "Items not already loaded. Loading " + Constants.ITEM_TABLE_NAME + "...");
-        }
-        String jString = requestManager.getItems();
+        Log.d(TAG, "loadItemDatabase()");
+        String jString = mRequestManager.getItems();
         if (jString != null) {
             try {
                 JSONObject object = new JSONObject(jString);
@@ -77,7 +65,7 @@ public class GameStaticsManager {
                     String name = item.getString("name");
                     JSONObject image = item.getJSONObject("image");
                     String img = image.getString("full");
-                    helper.addItem(id, name, img);
+                    mHelper.addItem(id, name, img);
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "Failed to parse item data: " + e);
@@ -88,15 +76,8 @@ public class GameStaticsManager {
     }
 
     private void loadSpellDatabase() {
-        Log.d(TAG, "Checking if spells were already loaded...");
-        int size = helper.getNumSpellTableEntries();
-        if (size > 0) {
-            Log.d(TAG, "Spells already loaded, skipping.");
-            return;
-        } else {
-            Log.d(TAG, "Spells not already loaded. Loading " + Constants.SS_TABLE_NAME + "...");
-        }
-        String jString = requestManager.getSummonerSpells();
+        Log.d(TAG, "loadSpellDatabase()");
+        String jString = mRequestManager.getSummonerSpells();
         if (jString != null) {
             try {
                 JSONObject object = new JSONObject(jString);
@@ -109,7 +90,7 @@ public class GameStaticsManager {
                     String name = spell.getString("name");
                     JSONObject image = spell.getJSONObject("image");
                     String img = image.getString("full");
-                    helper.addSpell(id, name, img);
+                    mHelper.addSpell(id, name, img);
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "Failed to parse spell data: " + e);
@@ -119,4 +100,10 @@ public class GameStaticsManager {
         }
     }
 
+    public void clearStaticsTables() {
+        Log.d(TAG, "clearStaticsTables()");
+        mHelper.clearChampTable();
+        mHelper.clearItemTable();
+        mHelper.clearSpellTable();
+    }
 }

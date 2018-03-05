@@ -1,6 +1,9 @@
 package com.sam.summoner.activity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -26,14 +30,21 @@ import org.json.JSONObject;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class MatchHistoryActivity extends AppCompatActivity {
-    public static final String TAG = "MatchHistoryActivity";
+    public static final String TAG = "MHActivity";
+    private Context mContext = this;
 
+    private RequestManager mRequestManager;
+    private StaticsDatabaseHelper mHelper;
     private ArrayList<MatchDto> matches;
-    private RequestManager requestManager;
-    private StaticsDatabaseHelper helper;
     private ArrayList<String> matchStrings;
+
+    private Thread inflationThread;
+    private BlockingQueue matchQueue = new ArrayBlockingQueue(10);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,53 +53,143 @@ public class MatchHistoryActivity extends AppCompatActivity {
 
         String jString = getIntent().getStringExtra("jString");
 
-        requestManager = RequestManager.getInstance();
-        helper = new StaticsDatabaseHelper(this);
-        matchStrings = new ArrayList<String>();
-        matches = new ArrayList<MatchDto>();
+        mRequestManager = RequestManager.getInstance();
+        mHelper = new StaticsDatabaseHelper(this);
+        matchStrings = new ArrayList<>();
+        matches = new ArrayList<>();
 
-        parseMatches(jString);
-        populateHistory();
+        // Launch thread to inflate matches as soon as they are downloaded and parsed
+        inflationThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < Constants.MATCH_HISTORY_LENGTH; i++) {
+                    final MatchDto match;
+                    try {
+                        final int index = i;
+                        match = (MatchDto) matchQueue.poll((long) 1, TimeUnit.SECONDS);
+                        // Must run on main thread
+                        //   Cannot touch view hierarchies between threads
+                        //   Glide must run on main thread
+                        runOnUiThread(new Runnable() {
+                            final LayoutInflater inflater = getLayoutInflater();
+                            final LinearLayout parent = (LinearLayout) findViewById(R.id.mhMatchList);
+                            @Override
+                            public void run() {
+                                populateMatch(inflater, parent, match, index);
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        Log.e(TAG, "Took too long to load match.");
+                    }
+                }
+            }
+        });
+        inflationThread.setPriority(Thread.NORM_PRIORITY + 2);
+        inflationThread.start();
+
+        new LoadUI().execute(jString);
     }
 
-    private void parseMatches(String jString) {
-        Log.d(TAG, "Parsing matchlist...");
+    private class LoadUI extends AsyncTask<String, Void, Void> {
+        ProgressDialog dialog;
+        private final String TAG_SUFFIX = ".LoadUI";
+
+        @Override
+        protected void onPreExecute() {
+            Log.d(TAG + TAG_SUFFIX, "onPreExecute()");
+            dialog = new ProgressDialog(mContext);
+            dialog.setMessage("Loading...");
+            dialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            Log.d(TAG + TAG_SUFFIX, "doInBackground()");
+            initBackEnd();
+            getMatches(params[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Log.d(TAG + TAG_SUFFIX, "onPostExecute()");
+            try {
+                inflationThread.join();
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Inflation thread couldn't join.");
+                Toast.makeText(mContext, "Loading took too long.", Toast.LENGTH_SHORT).show();
+            }
+            initFrontEnd();
+            if (dialog.isShowing()) {dialog.dismiss();}
+        }
+    }
+
+    private void initBackEnd() {
+        mRequestManager = RequestManager.getInstance();
+        mHelper = new StaticsDatabaseHelper(mContext);
+        matches = new ArrayList<>();
+        matchStrings = new ArrayList<>();
+    }
+
+    private void initFrontEnd() {
+        //populateHistory();
+        TextView loadingLabel = (TextView) findViewById(R.id.loadingLabel);
+        loadingLabel.setVisibility(View.GONE);
+    }
+
+    private void getMatches(String jString) {
+        Log.d(TAG, "getMatches()");
         try {
             JSONObject object = new JSONObject(jString);
-            JSONArray jArray = object.getJSONArray("matches");
+            final JSONArray jArray = object.getJSONArray("matches");
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject match = jArray.getJSONObject(i);
                 long matchID = match.getLong("gameId");
                 int champion = match.getInt("champion");
-                String matchString = requestManager.getMatchData(matchID);
+
+                String matchString = mRequestManager.getMatchData(matchID);
+                matchStrings.add(matchString);
+
                 MatchDto matchDto = new Gson().fromJson(matchString, MatchDto.class);
                 matchDto.focusChamp = champion;
                 matches.add(matchDto);
-                matchStrings.add(matchString);
+                matchQueue.add(matchDto);
             }
         } catch (JSONException e) {
             Log.e(TAG, "Failed to parse matchlist: " + e);
         }
     }
 
+    /*
+    private void parseMatches(String jString) {
+        Log.d(TAG, "Parsing matchlist...");
+        try {
+            JSONObject object = new JSONObject(jString);
+            final JSONArray jArray = object.getJSONArray("matches");
+            for (int i = 0; i < jArray.length(); i++) {
+                JSONObject match = jArray.getJSONObject(i);
+                long matchID = match.getLong("gameId");
+                int champion = match.getInt("champion");
+                String matchString = mRequestManager.getMatchData(matchID);
+                MatchDto matchDto = new Gson().fromJson(matchString, MatchDto.class);
+                matchDto.focusChamp = champion;
+                matches.add(matchDto);
+                matchQueue.add(matchDto);
+                matchStrings.add(matchString);
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to parse matchlist: " + e);
+        }
+    }
+    */
+
     private void populateHistory() {
         Log.d(TAG, "Filling match history UI...");
         final LayoutInflater inflater = getLayoutInflater();
         final LinearLayout parent = (LinearLayout) findViewById(R.id.mhMatchList);
         for (int i = 0; i < matches.size(); i++){
-            final MatchDto matchDto = matches.get(i);
-            final int ii = i;
-            Thread t = new Thread(new Runnable() {
-                LayoutInflater infl = inflater;
-                LinearLayout par = parent;
-                MatchDto m = matchDto;
-                @Override
-                public void run() {
-                    populateMatch(infl, par, m, ii);
-                }
-            });
-            t.setPriority(Thread.NORM_PRIORITY + 1);
-            t.run();
+            MatchDto matchDto = matches.get(i);
+            populateMatch(inflater, parent, matchDto, i);
         }
     }
 
@@ -151,20 +252,26 @@ public class MatchHistoryActivity extends AppCompatActivity {
         double time = l.doubleValue();
         int mins = (int) Math.floor(time/60);
         int secs = (int) gameDuration % 60;
+        String sec = "";
+        if (secs < 10) {
+            sec = "0" + secs;
+        } else {
+            sec = String.valueOf(secs);
+        }
 
         String ret = "Gold: " + gold + " | CS: " + cs + " | KDA: " + kills + "/"
-                + deaths + "/" + assists + "\n Gametime: " + mins + ":" + secs;
+                + deaths + "/" + assists + "\n Gametime: " + mins + ":" + sec;
         textStats.setText(ret);
     }
 
     private void setSummSpellImages(View view, int spellID1, int spellID2) {
         ImageView ss1 = (ImageView) view.findViewById(R.id.matchSumm1);
-        String spellName1 = helper.getSpellImgFromId(spellID1);
-        String url1 = requestManager.getSpellImageURL(spellName1);
+        String spellName1 = mHelper.getSpellImgFromId(spellID1);
+        String url1 = mRequestManager.getSpellImageURL(spellName1);
         setImg(ss1, url1);
         ImageView ss2 = (ImageView) view.findViewById(R.id.matchSumm2);
-        String spellName2 = helper.getSpellImgFromId(spellID2);
-        String url2 = requestManager.getSpellImageURL(spellName2);
+        String spellName2 = mHelper.getSpellImgFromId(spellID2);
+        String url2 = mRequestManager.getSpellImageURL(spellName2);
         setImg(ss2, url2);
     }
 
@@ -205,15 +312,15 @@ public class MatchHistoryActivity extends AppCompatActivity {
             img.setImageResource(R.drawable.empty_item);
             return;
         }
-        String imgName = helper.getItemImgFromId(i);
-        String url = requestManager.getItemImageURL(imgName);
+        String imgName = mHelper.getItemImgFromId(i);
+        String url = mRequestManager.getItemImageURL(imgName);
         if (url == Constants.UNKNOWN_IMAGE) {}
         setImg(img, url);
     }
 
     private void setPortrait(ImageView portrait, int championID) {
-        String imgName = helper.getChampionImgFromId(championID);
-        String url = requestManager.getChampionImageURL(imgName);
+        String imgName = mHelper.getChampionImgFromId(championID);
+        String url = mRequestManager.getChampionImageURL(imgName);
         setImg(portrait, url);
     }
 
@@ -234,8 +341,13 @@ public class MatchHistoryActivity extends AppCompatActivity {
         }
     }
 
-    private void setImg(ImageView img, String url) {
-        Glide.with(this).load(url).into(img);
+    private void setImg(final ImageView img, final String url) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Glide.with(mContext).load(url).into(img);
+            }
+        });
     }
 
 }

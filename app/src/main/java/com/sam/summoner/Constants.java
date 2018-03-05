@@ -19,6 +19,9 @@ public interface Constants {
     String ITEM_TABLE_NAME = "item_table";
     String SS_TABLE_NAME = "summspell_table";
     String FRIENDS_TABLE_NAME = "friends_table";
+    String DD_TABLE_NAME = "ddragon_table";
+
+    String DEFAULT_DD_VERSION = "8.4.1";
 
     String UNKNOWN_IMAGE = "UNKNOWN";
 

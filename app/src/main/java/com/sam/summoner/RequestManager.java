@@ -1,12 +1,16 @@
 package com.sam.summoner;
 
 import android.util.Log;
-import com.sam.summoner.grabber.WebGrabber;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.util.concurrent.ExecutionException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 // Handles URL requests by generating URLs and downloading content
 public class RequestManager {
@@ -19,7 +23,7 @@ public class RequestManager {
     private String API_KEY;
     private final String TAG = "RequestManager";
     // ddragon version default, is updated on application launch
-    private String ddVersion = "7.24.2";
+    private String ddVersion = Constants.DEFAULT_DD_VERSION;
 
     private RequestManager() {}
 
@@ -110,7 +114,7 @@ public class RequestManager {
         return ret;
     }
 
-    public void updateDdVersion() {
+    public String updateDdVersion() {
         Log.d(TAG, "Loading latest ddragon version code...");
         String ret = null;
         String jString = getDdragonVersion();
@@ -124,12 +128,13 @@ public class RequestManager {
             }
         }
         ddVersion = ret;
+        return ret;
     }
 
     public void setApiKey(String key) {
         API_KEY = key;
     }
-
+    /*
     private String getJsonData(String url) {
         Log.d(TAG, "Getting JSON data...");
         String jString = null;
@@ -144,5 +149,50 @@ public class RequestManager {
             Log.e(TAG, "Failed to get JSON data: jString is null");
         }
         return jString;
+    }
+    */
+    private String getJsonData(String url) {
+        final String finUrl = url;
+        final String jString[] = new String[1];
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "Opening http connection...");
+                HttpURLConnection connection = null;
+                try {
+                    URL url = new URL(finUrl);
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.connect();
+
+                    InputStream inputStream = connection.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                    Log.d(TAG, "Collecting data from URL...");
+                    StringBuilder buffer = new StringBuilder();
+                    String ln = "";
+                    while ((ln = reader.readLine()) != null) {
+                        buffer.append(ln).append("\n");
+                    }
+
+                    jString[0] = buffer.toString();
+
+                    reader.close();
+                    inputStream.close();
+                    Log.d(TAG, "Data collection done.");
+                    connection.disconnect();
+                    Log.d(TAG, "Http connection closed.");
+
+                } catch (IOException e) {
+                    Log.e(TAG, "Connection failure: " + e);
+                }
+            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Thread couldn't join.");
+        }
+        return jString[0];
     }
 }

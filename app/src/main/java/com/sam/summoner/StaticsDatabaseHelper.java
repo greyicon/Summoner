@@ -27,6 +27,8 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
     public static final String SS_COL3 = "image";
     public static final String FL_TABLE_NAME  = Constants.FRIENDS_TABLE_NAME;
     public static final String FL_COL1 = "name";
+    public static final String DD_TABLE_NAME  = Constants.DD_TABLE_NAME;
+    public static final String DD_COL1 = "version";
 
     public StaticsDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -68,6 +70,22 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
                 ")";
         db.execSQL(query);
         Log.d(TAG, "Friend database table created.");
+
+        Log.d(TAG, "Creating friend database table...");
+        query = "create table " + FL_TABLE_NAME + " (" +
+                "id integer primary key autoincrement, " +
+                FL_COL1 + " text" +
+                ")";
+        db.execSQL(query);
+        Log.d(TAG, "Friend database table created.");
+
+        Log.d(TAG, "Creating dd database table...");
+        query = "create table " + DD_TABLE_NAME + " (" +
+                "id integer primary key autoincrement, " +
+                DD_COL1 + " text" +
+                ")";
+        db.execSQL(query);
+        Log.d(TAG, "dd database table created.");
     }
 
     @Override
@@ -115,6 +133,7 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
         Cursor cur = db.rawQuery("select " + CHAMP_COL2 + " from " + CHAMP_TABLE_NAME + " where " + CHAMP_COL1 + " = " + id, null);
         cur.moveToFirst();
         str = cur.getString(0);
+        cur.close();
         return str;
     }
 
@@ -125,6 +144,7 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
         Cursor cur = db.rawQuery("select " + ITEM_COL2 + " from " + ITEM_TABLE_NAME + " where " + ITEM_COL1 + " = " + id, null);
         cur.moveToFirst();
         str = cur.getString(0);
+        cur.close();
         return str;
     }
 
@@ -135,6 +155,7 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
         Cursor cur = db.rawQuery("select " + SS_COL2 + " from " + SS_TABLE_NAME + " where " + SS_COL1 + " = " + id, null);
         cur.moveToFirst();
         str = cur.getString(0);
+        cur.close();
         return str;
     }
 
@@ -146,6 +167,7 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
         cur.moveToFirst();
         if (cur.getCount() == 0) {return Constants.UNKNOWN_IMAGE;}
         str = cur.getString(0);
+        cur.close();
         return str;
     }
 
@@ -157,6 +179,7 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
         cur.moveToFirst();
         if (cur.getCount() == 0) {return Constants.UNKNOWN_IMAGE;}
         str = cur.getString(0);
+        cur.close();
         return str;
     }
 
@@ -168,6 +191,7 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
         cur.moveToFirst();
         if (cur.getCount() == 0) {return Constants.UNKNOWN_IMAGE;}
         str = cur.getString(0);
+        cur.close();
         return str;
     }
 
@@ -178,6 +202,7 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
         Cursor cur = db.rawQuery(qry, null);
         cur.moveToFirst();
         int count = cur.getInt(0);
+        cur.close();
         return count;
     }
 
@@ -188,6 +213,7 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
         Cursor cur = db.rawQuery(qry, null);
         cur.moveToFirst();
         int count = cur.getInt(0);
+        cur.close();
         return count;
     }
 
@@ -198,7 +224,29 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
         Cursor cur = db.rawQuery(qry, null);
         cur.moveToFirst();
         int count = cur.getInt(0);
+        cur.close();
         return count;
+    }
+
+    public void clearChampTable() {
+        Log.d(TAG, "Clearing " + CHAMP_TABLE_NAME);
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "delete from " + CHAMP_TABLE_NAME;
+        db.execSQL(query);
+    }
+
+    public void clearItemTable() {
+        Log.d(TAG, "Clearing " + ITEM_TABLE_NAME);
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "delete from " + ITEM_TABLE_NAME;
+        db.execSQL(query);
+    }
+
+    public void clearSpellTable() {
+        Log.d(TAG, "Clearing " + SS_TABLE_NAME);
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "delete from " + SS_TABLE_NAME;
+        db.execSQL(query);
     }
 
     public void addFriend(String name) {
@@ -223,6 +271,43 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
             friends.add(cur.getString(0));
             cur.moveToNext();
         }
+        cur.close();
         return friends;
     }
+
+    public int getNumDDTableEntries() {
+        Log.d(TAG, "Checking number of dd table entries...");
+        SQLiteDatabase db = this.getWritableDatabase();
+        String qry = "select count(*) from " + DD_TABLE_NAME;
+        Cursor cur = db.rawQuery(qry, null);
+        cur.moveToFirst();
+        int count = cur.getInt(0);
+        cur.close();
+        return count;
+    }
+
+    public void addDDVersion(String version) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(DD_COL1, version);
+        db.insert(DD_TABLE_NAME, null, cv);
+    }
+
+    public void removeDDVersion(String version) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "delete from " + DD_TABLE_NAME + " where " + DD_COL1 + " = '" + version + "'";
+        db.execSQL(query);
+    }
+
+    public String getDDVersion() {
+        String ret = "";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cur = db.rawQuery("select " + DD_COL1 + " from " + DD_TABLE_NAME, null);
+        cur.moveToFirst();
+        ret = cur.getString(0);
+        cur.close();
+        return ret;
+    }
+
+
 }
