@@ -1,15 +1,29 @@
 apply plugin: 'com.android.application'
 
+// ### //
+// Api Keys
+def RIOT_API_KEY = '"' + RIOT_API_KEY + '"' ?: '"Retreive API Key"'
+
+def STRING = 'String'
+// ### //
+
 android {
-    compileSdkVersion 25
-    buildToolsVersion "26.0.1"
+    compileSdkVersion 26
     defaultConfig {
-        applicationId "com.sam.summoner"
-        minSdkVersion 23
-        targetSdkVersion 25
+        applicationId "com.sam.findsummoner"
+        minSdkVersion 21
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        each { type ->
+            type.buildConfigField STRING, 'RIOT_API_KEY', RIOT_API_KEY
+        }
+
+        manifestPlaceholders = [
+                RIOT_API_KEY: RIOT_API_KEY
+        ]
     }
     buildTypes {
         release {
@@ -17,25 +31,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    externalNativeBuild {
-        ndkBuild {
-            path 'src/main/jni/Android.mk'
-        }
-    }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile files('libs/annotation-4.5.0.jar')
-    compile files('libs/compiler-4.5.0.jar')
-    compile files('libs/glide-full-4.5.0.jar')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation 'com.github.bumptech.glide:glide:4.3.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
     compile 'com.google.code.gson:gson:2.8.2'
-    compile 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:design:25.3.1'
-    testCompile 'junit:junit:4.12'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 }
