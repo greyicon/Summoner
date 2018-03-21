@@ -88,10 +88,14 @@ public class MainActivity extends AppCompatActivity {
         if (!dataEntered){
             Log.d(TAG, "Initializing static data.");
             gameStaticsManager.init();
+            mHelper.clearDDVersion();
+            mHelper.addDDVersion(latestDD);
         } else if (!latestDD.equals(currentDD)) {
             Log.d(TAG, "Updating static data.");
             gameStaticsManager.clearStaticsTables();
             gameStaticsManager.init();
+            mHelper.clearDDVersion();
+            mHelper.addDDVersion(latestDD);
         } else {
             Log.d(TAG, "Static data already loaded.");
         }

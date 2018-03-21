@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SummonerTest.iml" filepath="$PROJECT_DIR$/SummonerTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SummonerGit.iml" filepath="$PROJECT_DIR$/SummonerGit.iml" />
+      <module fileurl="file://C:\Users\s.goldwax\Desktop\git\SummonerGit\SummonerTest.iml" filepath="C:\Users\s.goldwax\Desktop\git\SummonerGit\SummonerTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

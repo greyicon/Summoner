@@ -285,9 +285,9 @@ public class StaticsDatabaseHelper extends SQLiteOpenHelper {
         db.insert(DD_TABLE_NAME, null, cv);
     }
 
-    public void removeDDVersion(String version) {
+    public void clearDDVersion() {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "delete from " + DD_TABLE_NAME + " where " + DD_COL1 + " = '" + version + "'";
+        String query = "delete from " + DD_TABLE_NAME;
         db.execSQL(query);
     }
 
