@@ -94,12 +94,12 @@ public class InfoActivity extends AppCompatActivity {
 
     private void initFrontEnd() {
         Log.d(TAG, "initFrontEnd()");
-        nameView = (TextView) findViewById(R.id.nameView);
-        levelView = (TextView) findViewById(R.id.levelView);
+        nameView = findViewById(R.id.nameView);
+        levelView = findViewById(R.id.levelView);
         setNameViewsByAccount();
 
-        searchTxt = (TextView) findViewById(R.id.searchTxt);
-        Button searchBtn = (Button) findViewById(R.id.searchBtn);
+        searchTxt = findViewById(R.id.searchTxt);
+        Button searchBtn = findViewById(R.id.searchBtn);
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,7 +108,7 @@ public class InfoActivity extends AppCompatActivity {
             }
         });
 
-        addFavBtn = (Button) findViewById(R.id.addFavBtn);
+        addFavBtn = findViewById(R.id.addFavBtn);
         addFavBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,14 +156,14 @@ public class InfoActivity extends AppCompatActivity {
         levelView.setText("Level " + lvl);
 
         // Set summoner icon
-        ImageView img = (ImageView) findViewById(R.id.summonerIcon);
+        ImageView img = findViewById(R.id.summonerIcon);
         String url = requestManager.getSummonerIconImageURL(accountDto.summonerDto.profileIconId);
         Glide.with(this).load(url).into(img);
     }
 
     private void inflateQueueViewsByAccount() {
         Log.d(TAG, "inflateQueueViewsByAccount()");
-        LinearLayout parent = (LinearLayout) findViewById(R.id.rankQueueLayout);
+        LinearLayout parent = findViewById(R.id.rankQueueLayout);
         parent.removeAllViews();
         inflateQueueView(accountDto.rankedSolo, Constants.RANKED_SOLO_ID);
         inflateQueueView(accountDto.rankedFlex, Constants.RANKED_FLEX_ID);
@@ -172,7 +172,7 @@ public class InfoActivity extends AppCompatActivity {
 
     private void inflateQueueView(LeaguePositionDto positionDto, final int queueId) {
         Log.d(TAG, "inflateQueueViewsByAccount(" + queueId + ")");
-        LinearLayout parent = (LinearLayout) findViewById(R.id.rankQueueLayout);
+        LinearLayout parent = findViewById(R.id.rankQueueLayout);
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.layout_ranked_info, parent, false);
 
@@ -182,22 +182,22 @@ public class InfoActivity extends AppCompatActivity {
             return;
         }
 
-        ImageView img = (ImageView) view.findViewById(R.id.rankLogo);
+        ImageView img = view.findViewById(R.id.rankLogo);
         setTierIcon(positionDto.tier, img);
 
-        TextView rankLabel = (TextView) view.findViewById(R.id.rankLabel);
+        TextView rankLabel = view.findViewById(R.id.rankLabel);
         setRankLabel(rankLabel, queueId);
 
-        TextView rankTitle = (TextView) view.findViewById(R.id.rankTitle);
+        TextView rankTitle = view.findViewById(R.id.rankTitle);
         setRankTitle(rankTitle, positionDto);
 
-        TextView rankInfo = (TextView) view.findViewById(R.id.rankInfoPar);
+        TextView rankInfo = view.findViewById(R.id.rankInfoPar);
         setRankInfo(rankInfo, positionDto);
 
-        TextView rankWinrate = (TextView) view.findViewById(R.id.rankWinrate);
+        TextView rankWinrate = view.findViewById(R.id.rankWinrate);
         setRankWinrate(rankWinrate, positionDto);
 
-        Button rankHistoryBtn = (Button) view.findViewById(R.id.queueHistoryBtn);
+        Button rankHistoryBtn = view.findViewById(R.id.queueHistoryBtn);
         rankHistoryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -281,19 +281,19 @@ public class InfoActivity extends AppCompatActivity {
 
     private void handleNullPosition(View view, int queueId) {
         Log.d(TAG, "handleNullPosition(" + queueId + ")");
-        ImageView img = (ImageView) view.findViewById(R.id.rankLogo);
+        ImageView img = view.findViewById(R.id.rankLogo);
         setTierIcon("", img);
 
-        TextView rankLabel = (TextView) view.findViewById(R.id.rankLabel);
+        TextView rankLabel = view.findViewById(R.id.rankLabel);
         setRankLabel(rankLabel, queueId);
 
-        TextView rankTitle = (TextView) view.findViewById(R.id.rankTitle);
+        TextView rankTitle = view.findViewById(R.id.rankTitle);
         rankTitle.setText(" ");
 
-        TextView rankInfo = (TextView) view.findViewById(R.id.rankInfoPar);
+        TextView rankInfo = view.findViewById(R.id.rankInfoPar);
         rankInfo.setText(R.string.rank_null_position);
 
-        TextView rankWinrate = (TextView) view.findViewById(R.id.rankWinrate);
+        TextView rankWinrate = view.findViewById(R.id.rankWinrate);
         rankWinrate.setText(" ");
 
         ((ViewManager)view).removeView(view.findViewById(R.id.queueHistoryBtn));
@@ -387,6 +387,8 @@ public class InfoActivity extends AppCompatActivity {
         if (jString != null) {
             Intent i = new Intent(this, MatchHistoryActivity.class);
             i.putExtra("jString", jString);
+            i.putExtra("accountId", accountDto.summonerDto.accountId);
+            i.putExtra("queue", queue);
             startActivityForResult(i, 1);
         } else {
             Log.e(TAG, "Failed to load match history: jString is null.");

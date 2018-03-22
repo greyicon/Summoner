@@ -32,6 +32,7 @@ public class ParticipantDto {
     private String discernRole(String lane, String role) {
         // Participant's role (Legal values: DUO, NONE, SOLO, DUO_CARRY, DUO_SUPPORT)
         // Participant's lane (Legal values: MID, MIDDLE, TOP, JUNGLE, BOT, BOTTOM)
+        if (lane.equals("NONE")) {return Constants.ROLE_ADC;}
         if (lane.equals("MID") || lane.equals("MIDDLE")) {return Constants.ROLE_MID;}
         if (lane.equals("TOP")) {return Constants.ROLE_TOP;}
         if (lane.equals("JUNGLE")) {return Constants.ROLE_JUNGLE;}

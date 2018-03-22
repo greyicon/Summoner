@@ -12,7 +12,7 @@ public class CacheDatabaseHelper extends SQLiteOpenHelper{
     private static final String COL_1 = "id";
     private static final String COL_2 = "value";
 
-    private static final int MAX_CACHE_SIZE = 200;
+    private static final int MAX_CACHE_SIZE = 500;
 
     public CacheDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);

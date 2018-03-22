@@ -51,6 +51,15 @@ public class RequestManager {
         return getJsonData(ret);
     }
 
+    // JSON: endIndex most recent games in given queue
+    public String getMatchHistoryJObject(long aid, int queue, int startIndex, int endIndex) {
+        Log.d(TAG, "Handling request: getMatchHistoryJObject...");
+        String ret = "https://na1.api.riotgames.com/lol/match/v3/matchlists/by-account/" + aid +
+                "?beginIndex=" + startIndex + "&endIndex=" + endIndex + "&queue=" + queue +
+                "&api_key=" + API_KEY;
+        return getJsonData(ret);
+    }
+
     // JSON: Basic information from account's 20 most recent games
     public String getRecentMatchesJObject(long aid) {
         Log.d(TAG, "Handling request: getRecentMatchesJObject...");

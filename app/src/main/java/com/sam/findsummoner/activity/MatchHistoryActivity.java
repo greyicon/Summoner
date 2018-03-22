@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -48,43 +49,25 @@ public class MatchHistoryActivity extends AppCompatActivity {
     private Thread inflationThread;
     private BlockingQueue inflationQueue = new ArrayBlockingQueue(10);
 
+    private long accountId;
+    private int queue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "Creating " + TAG);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match_history);
 
+        matches = new ArrayList<>();
+        matchStrings = new ArrayList<>();
+
         String jString = getIntent().getStringExtra("jString");
+        accountId = getIntent().getLongExtra("accountId", 0);
+        queue = getIntent().getIntExtra("queue", 0);
 
         // Launch thread to inflate matches as soon as they are downloaded and parsed
         Log.d(TAG, "Starting inflation thread");
-        inflationThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < Constants.MATCH_HISTORY_LENGTH; i++) {
-                    final MatchDto match;
-                    try {
-                        final int index = i;
-                        match = (MatchDto) inflationQueue.poll((long) 2, TimeUnit.SECONDS);
-                        // Must run on main thread
-                        //   Cannot touch view hierarchies between threads
-                        //   Glide must run on main thread
-                        runOnUiThread(new Runnable() {
-                            final LayoutInflater inflater = getLayoutInflater();
-                            final LinearLayout parent = (LinearLayout) findViewById(R.id.mhMatchList);
-                            @Override
-                            public void run() {
-                                populateMatch(inflater, parent, match, index);
-                            }
-                        });
-                    } catch (InterruptedException e) {
-                        Log.e(TAG, "Took too long to load match.");
-                    }
-                }
-            }
-        });
-        inflationThread.setPriority(Thread.NORM_PRIORITY + 2);
-        inflationThread.start();
+        startInflationThread();
 
         new LoadUI().execute(jString);
     }
@@ -129,14 +112,93 @@ public class MatchHistoryActivity extends AppCompatActivity {
         mRequestManager = RequestManager.getInstance();
         mHelper = new StaticsDatabaseHelper(mContext);
         mCache = new CacheDatabaseHelper(this);
-        matches = new ArrayList<>();
-        matchStrings = new ArrayList<>();
     }
 
     private void initFrontEnd() {
         Log.d(TAG, "initFrontEnd()");
-        TextView loadingLabel = (TextView) findViewById(R.id.loadingLabel);
+        TextView loadingLabel = findViewById(R.id.loadingLabel);
         loadingLabel.setVisibility(View.GONE);
+        Button moreGames = findViewById(R.id.moreGamesBtn);
+        moreGames.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadMoreGames();
+            }
+        });
+    }
+
+    private void startInflationThread() {
+        final int start = matches.size();
+        final int end = start + Constants.MATCH_HISTORY_LENGTH;
+        inflationThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = start; i < end; i++) {
+                    final MatchDto match;
+                    try {
+                        final int index = i;
+                        match = (MatchDto) inflationQueue.poll((long) 2, TimeUnit.SECONDS);
+                        // Must run on main thread
+                        //   Cannot touch view hierarchies between threads
+                        //   Glide must run on main thread
+                        runOnUiThread(new Runnable() {
+                            final LayoutInflater inflater = getLayoutInflater();
+                            final LinearLayout parent = (LinearLayout) findViewById(R.id.mhMatchList);
+                            @Override
+                            public void run() {
+                                populateMatch(inflater, parent, match, index);
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        Log.e(TAG, "Took too long to load match.");
+                    }
+                }
+            }
+        });
+        inflationThread.setPriority(Thread.NORM_PRIORITY + 2);
+        inflationThread.start();
+    }
+
+    private void loadMoreGames() {
+        startInflationThread();
+        new LoadMoreUI().execute();
+    }
+
+    private class LoadMoreUI extends AsyncTask<Void, Void, Void> {
+        ProgressDialog dialog;
+        private final String TAG_SUFFIX = ".LoadMoreUI";
+
+        @Override
+        protected void onPreExecute() {
+            Log.d(TAG + TAG_SUFFIX, "onPreExecute()");
+            dialog = new ProgressDialog(mContext);
+            dialog.setMessage("Loading...");
+            dialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Log.d(TAG + TAG_SUFFIX, "doInBackground()");
+            int start = matches.size();
+            int end = matches.size() + Constants.MATCH_HISTORY_LENGTH;
+            String moreGamesJString = mRequestManager.getMatchHistoryJObject(accountId, queue,
+                    start, end);
+            getMatches(moreGamesJString);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Log.d(TAG + TAG_SUFFIX, "onPostExecute()");
+            try {
+                Log.d(TAG, "Closing inflation thread");
+                inflationThread.join();
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Inflation thread couldn't join.");
+                Toast.makeText(mContext, "Loading took too long.", Toast.LENGTH_SHORT).show();
+            }
+            if (dialog.isShowing()) {dialog.dismiss();}
+        }
     }
 
     private void getMatches(String jString) {
